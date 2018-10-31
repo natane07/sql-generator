@@ -1,10 +1,10 @@
-#include <stdio.h>
+#include "include\menu.h"
+#include "include\app.h"
 
 int main(int argc, char **argv)
 {
-    int a = 3;
-    int b = 6;
-    int result;
-    result = a + b;
-    printf("%d", result);
+    AppData *appData = init();
+    displayMenu();
+    mainLoop(appData);
+    destroy(appData);
 }
