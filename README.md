@@ -1,4 +1,6 @@
 # Installation
+- Install TDM-GCC [here](http://tdm-gcc.tdragon.net/).
+- Add GCC to your PATH.
 - Install a Git Client [here](https://git-scm.com/).
 - Clone the git repo:
 ```bash
