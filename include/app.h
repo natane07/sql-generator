@@ -5,11 +5,16 @@
 typedef struct AppData AppData;
 struct AppData
 {
-    char pName[60];
+    char pName[20];
 };
 
 AppData *init();
 void mainLoop(AppData *);
+void chooseProfile(AppData *);
+void createProfile(AppData *);
+void useProfile(AppData *);
+int getChoice();
+void getString(char *, int);
 void destroy(AppData *);
 
 #endif
