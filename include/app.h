@@ -5,6 +5,7 @@
 typedef struct AppData AppData;
 struct AppData
 {
+    char version[10];
     char pName[20];
 };
 

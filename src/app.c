@@ -1,5 +1,6 @@
 #include "..\include\app.h"
 #include "..\include\menu.h"
+#include "..\include\file.h"
 #include <stdlib.h>
 #include <stddef.H>
 #include <stdio.h>
@@ -10,6 +11,7 @@ AppData *init()
     AppData *appData = malloc(sizeof(AppData *));
     if (appData == NULL)
         exit(-1);
+    initFs(appData);
     return appData;
 }
 
