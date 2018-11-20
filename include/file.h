@@ -15,5 +15,8 @@
 void initFs(AppData *);
 void initFolders(char *);
 void initConfigFiles(char *, List *);
+void applySettings(List *, AppData *);
+void applySetting(char **, void *);
+int parseSetting(char *, char *, char *);
 
 #endif

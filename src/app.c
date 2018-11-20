@@ -26,7 +26,7 @@ void chooseProfile(AppData *appData)
     choice = getChoice();
     while (choice != 0 && choice != 1 && choice != 2)
     {
-        displayMenu();
+        displayMenu(appData);
         printf("%d", choice);
         choice = getChoice();
     }

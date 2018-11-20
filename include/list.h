@@ -21,9 +21,10 @@ void push(List *, char *);
 void unshift(List *, char *);
 char *pop(List *);
 char *shift(List *);
+void forEach(List *, void (*)(char **, void *), void *);
 void printList(List *);
 void printElement(char *);
 Element *getElement(List *, int);
-void *setElement(List *, int, char *);
+void setElement(List *, int, char *);
 
 #endif

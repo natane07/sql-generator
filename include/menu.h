@@ -2,6 +2,8 @@
 
 #define MENU_H
 
-void displayMenu();
+#include "app.h"
+
+void displayMenu(AppData *);
 
 #endif
