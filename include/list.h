@@ -22,6 +22,7 @@ void unshift(List *, char *);
 char *pop(List *);
 char *shift(List *);
 void forEach(List *, void (*)(char **, void *), void *);
+void destroyList(List *);
 void printList(List *);
 void printElement(char *);
 Element *getElement(List *, int);

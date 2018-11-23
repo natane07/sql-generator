@@ -15,6 +15,7 @@ void initFs(AppData *appData)
     initFolders(path);
     initConfigFiles(path, settings);
     applySettings(settings, appData);
+    destroyList(settings);
 }
 
 void initFolders(char *path)
