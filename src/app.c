@@ -2,7 +2,7 @@
 #include "..\include\menu.h"
 #include "..\include\file.h"
 #include <stdlib.h>
-#include <stddef.H>
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -27,7 +27,6 @@ void chooseProfile(AppData *appData)
     while (choice != 0 && choice != 1 && choice != 2)
     {
         displayMenu(appData);
-        printf("%d", choice);
         choice = getChoice();
     }
     switch (choice)
@@ -74,5 +73,7 @@ void getString(char *string, int maxSize)
 
 void destroy(AppData *appData)
 {
+    free(appData->version);
+    free(appData->pName);
     free(appData);
 }

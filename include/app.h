@@ -2,11 +2,14 @@
 
 #define APP_H
 
+#include "list.h"
+
 typedef struct AppData AppData;
 struct AppData
 {
-    char version[10];
-    char pName[20];
+    char *version;
+    char *pName;
+    List *existingProfiles;
 };
 
 AppData *init();

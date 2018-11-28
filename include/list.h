@@ -19,9 +19,9 @@ struct List
 List *listInit();
 void push(List *, char *);
 void unshift(List *, char *);
-char *pop(List *);
-char *shift(List *);
-void forEach(List *, void (*)(char **, void *), void *);
+void pop(List *);
+void shift(List *);
+void forEach(List *, void (*)(char *, void *), void *);
 void destroyList(List *);
 void printList(List *);
 void printElement(char *);
