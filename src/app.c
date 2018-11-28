@@ -1,6 +1,7 @@
 #include "..\include\app.h"
 #include "..\include\menu.h"
 #include "..\include\file.h"
+#include "..\include\utils.h"
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -52,23 +53,6 @@ void createProfile(AppData *appData)
 
 void useProfile(AppData *appData)
 {
-}
-
-int getChoice()
-{
-    int choice;
-    printf("Enter choice: ");
-    fflush(stdin);
-    choice = fgetc(stdin) - 48;
-    return choice;
-}
-
-void getString(char *string, int maxSize)
-{
-    fflush(stdin);
-    fgets(string, maxSize, stdin);
-    if (string[strlen(string) - 1] == '\n')
-        string[strlen(string) - 1] = '\0';
 }
 
 void destroy(AppData *appData)

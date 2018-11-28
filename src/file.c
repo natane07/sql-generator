@@ -1,6 +1,7 @@
 #include "..\include\file.h"
 #include "..\include\list.h"
 #include "..\include\app.h"
+#include "..\include\utils.h"
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -92,12 +93,6 @@ void initProfilesFile(char *path, AppData *appData)
     }
 }
 
-void remCrlf(char *str)
-{
-    if (str[strlen(str) - 1] == '\n')
-        str[strlen(str) - 1] = '\0';
-}
-
 int fileExists(char *basePath, char *filePath)
 {
     char fileLocation[MAXPATHLENGTH];
@@ -132,7 +127,7 @@ void applySetting(char *content, void *data)
     {
         if (strcmp(key, "version") == 0)
         {
-            strcpy(appData->version, value);
+            appData->version = resetString(appData->version, value);
         }
         else if (strcmp(key, "something") == 0)
         {
@@ -158,9 +153,7 @@ void setDefaultData(AppData *appData)
 {
     char version[] = DEFAULT_VERSION;
     char profile[] = DEFAULT_PROFILE;
-    appData->version = malloc((strlen(version) + 1) * sizeof(char));
-    appData->pName = malloc((strlen(profile) + 1) * sizeof(char));
-    strcpy(appData->pName, profile);
-    strcpy(appData->version, version);
+    appData->version = setString(appData->version, version);
+    appData->pName = setString(appData->pName, profile);
     push(appData->existingProfiles, DEFAULT_PROFILE);
 }

@@ -26,7 +26,6 @@ void initFs(AppData *);
 void initFolders(char *);
 void initConfigFile(char *, List *);
 void initProfilesFile(char *, AppData *);
-void remCrlf(char *);
 int fileExists(char *, char *);
 FILE *openFile(char *, char *, char *);
 void applySettings(List *, AppData *);
