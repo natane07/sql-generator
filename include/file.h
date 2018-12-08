@@ -32,5 +32,6 @@ void applySettings(List *, AppData *);
 void applySetting(char *, void *);
 void setDefaultData(AppData *);
 void getFileContent(List *, int, FILE *);
+void printConfigFile(FILE *);
 
 #endif

@@ -50,9 +50,7 @@ void initConfigFile(char *path, List *settings)
         config = openFile(path, CONFIG_FILE, "w");
         if (config != NULL)
         {
-            fprintf(config, "version=%s\n", DEFAULT_VERSION);
-            fprintf(config, "defaultProfile=%s\n", DEFAULT_PROFILE);
-            fclose(config);
+            printConfigFile(config);
         }
     }
 }
@@ -73,7 +71,7 @@ void initProfilesFile(char *path, AppData *appData)
         profiles = openFile(path, PROFILES_FILE, "w");
         if (profiles != NULL)
         {
-            fprintf(profiles, "%s=1\n", DEFAULT_PROFILE);
+            printIni(profiles, DEFAULT_PROFILE, "1");
             fclose(profiles);
         }
     }
@@ -140,4 +138,11 @@ void getFileContent(List *storage, int bufferSize, FILE *fp)
     }
     fclose(fp);
     free(buffer);
+}
+
+void printConfigFile(FILE *fp)
+{
+    printIni(fp, "version", DEFAULT_VERSION);
+    printIni(fp, "defaultProfile", DEFAULT_PROFILE);
+    fclose(fp);
 }
