@@ -12,12 +12,16 @@ int getChoice()
     return choice;
 }
 
-void getString(char *string, int maxSize)
+char *getString(char *string, int maxSize)
 {
+    char buffer[maxSize];
+    if (string != NULL)
+        free(string);
     fflush(stdin);
-    fgets(string, maxSize, stdin);
-    if (string[strlen(string) - 1] == '\n')
-        string[strlen(string) - 1] = '\0';
+    fgets(buffer, maxSize, stdin);
+    remCrlf(buffer);
+    string = setString(string, buffer);
+    return string;
 }
 
 void remCrlf(char *str)
@@ -29,6 +33,8 @@ void remCrlf(char *str)
 char *setString(char *destination, char *source)
 {
     destination = malloc((strlen(source) + 1) * sizeof(char));
+    if (destination == NULL)
+        exit(-1);
     strcpy(destination, source);
     return destination;
 }

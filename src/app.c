@@ -12,7 +12,16 @@ AppData *init()
     AppData *appData = malloc(sizeof(AppData *));
     if (appData == NULL)
         exit(-1);
+    appData = setAppData(appData);
     initFs(appData);
+    return appData;
+}
+
+AppData *setAppData(AppData *appData)
+{
+    appData->version = NULL;
+    appData->pName = NULL;
+    appData->existingProfiles = NULL;
     return appData;
 }
 
@@ -46,9 +55,11 @@ void chooseProfile(AppData *appData)
 
 void createProfile(AppData *appData)
 {
+    char *buffer = NULL;
     printf("Enter new profile name: ");
-    getString(appData->pName, 20);
-    printf("Profile created successfully!\n");
+    buffer = getString(buffer, MAX_NAME_LENGTH);
+    //check if profile name is correct
+    printf("%s created successfully!\n", buffer);
 }
 
 void useProfile(AppData *appData)
@@ -57,6 +68,7 @@ void useProfile(AppData *appData)
 
 void destroy(AppData *appData)
 {
+    destroyList(appData->existingProfiles);
     free(appData->version);
     free(appData->pName);
     free(appData);

@@ -13,6 +13,7 @@ struct AppData
 };
 
 AppData *init();
+AppData *setAppData(AppData *);
 void mainLoop(AppData *);
 void chooseProfile(AppData *);
 void createProfile(AppData *);

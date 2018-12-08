@@ -20,7 +20,7 @@
 #define CONFIG_DIR "sql-generator\\config"
 #define DATA_DIR "sql-generator\\data"
 #define CONFIG_FILE "sql-generator\\config\\config.ini"
-#define PROFILES_FILE "sql-generator\\config\\profiles.txt"
+#define PROFILES_FILE "sql-generator\\config\\profiles.ini"
 
 void initFs(AppData *);
 void initFolders(char *);
@@ -30,7 +30,7 @@ int fileExists(char *, char *);
 FILE *openFile(char *, char *, char *);
 void applySettings(List *, AppData *);
 void applySetting(char *, void *);
-int parseSetting(char *, char *, char *);
 void setDefaultData(AppData *);
+void getFileContent(List *, int, FILE *);
 
 #endif
