@@ -45,3 +45,19 @@ char *resetString(char *destination, char *source)
     setString(destination, source);
     return destination;
 }
+
+int isStringSafe(char *str)
+{
+    char allowedChars[] = ALPHA_NUM;
+    char *match;
+    int i;
+    for (i = 0; i < strlen(str); i++)
+    {
+        match = strpbrk(str + i, allowedChars);
+        if (match != str + i)
+        {
+            return 0;
+        }
+    }
+    return 1;
+}

@@ -58,7 +58,16 @@ void createProfile(AppData *appData)
     char *buffer = NULL;
     printf("Enter new profile name: ");
     buffer = getString(buffer, MAX_NAME_LENGTH);
-    //check if profile name is correct
+    if (has(appData->existingProfiles, buffer))
+    {
+        printf(NAME_TAKEN_ERR);
+        return createProfile(appData);
+    }
+    if (!isStringSafe(buffer))
+    {
+        printf(NAME_UNSAFE_ERR);
+        return createProfile(appData);
+    }
     printf("%s created successfully!\n", buffer);
 }
 

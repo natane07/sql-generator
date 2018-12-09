@@ -4,6 +4,10 @@
 
 #include "list.h"
 
+//errors
+#define NAME_TAKEN_ERR "This profile name is already in use!\n"
+#define NAME_UNSAFE_ERR "Profile names should only use alphanumeric characters!\n"
+
 typedef struct AppData AppData;
 struct AppData
 {

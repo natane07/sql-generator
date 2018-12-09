@@ -21,6 +21,7 @@ void push(List *, char *);
 void unshift(List *, char *);
 void pop(List *);
 void shift(List *);
+int has(List *, char *);
 void forEach(List *, void (*)(char *, void *), void *);
 void destroyList(List *);
 void printList(List *);
