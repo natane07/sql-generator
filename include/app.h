@@ -14,6 +14,7 @@ struct AppData
     char *version;
     char *pName;
     List *existingProfiles;
+    List *settings;
 };
 
 AppData *init();
@@ -22,6 +23,7 @@ void mainLoop(AppData *);
 void chooseProfile(AppData *);
 void createProfile(AppData *);
 void useProfile(AppData *);
+void saveProfile(AppData *, char *);
 void destroy(AppData *);
 
 #endif

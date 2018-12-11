@@ -1,4 +1,6 @@
 #include "..\include\utils.h"
+#include "..\include\parser.h"
+#include "..\include\file.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,4 +62,17 @@ int isStringSafe(char *str)
         }
     }
     return 1;
+}
+
+int compareKey(char *ini, char *comparator)
+{
+    int ok;
+    char key[MAX_SETTING_SIZE];
+    char value[MAX_SETTING_SIZE];
+    ok = parseIni(ini, key, value);
+    if (ok)
+    {
+        return strcmp(comparator, key) == 0;
+    }
+    return 0;
 }

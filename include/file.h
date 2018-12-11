@@ -11,6 +11,10 @@
 #define MAX_NAME_LENGTH 30
 #define MAXPATHLENGTH 260
 
+//SETTINGS
+#define SETT_DEF_PRO "defaultProfile"
+#define SETT_VER "version"
+
 //DEFAULT VALUES
 #define DEFAULT_PROFILE "default"
 #define DEFAULT_VERSION "0.2"

@@ -12,15 +12,14 @@
 void initFs(AppData *appData)
 {
     char path[MAXPATHLENGTH];
-    List *settings = listInit();
+    appData->settings = listInit();
     appData->existingProfiles = listInit();
     sprintf(path, "%s", getenv("APPDATA"));
     setDefaultData(appData);
     initFolders(path);
-    initConfigFile(path, settings);
+    initConfigFile(path, appData->settings);
     initProfilesFile(path, appData);
-    applySettings(settings, appData);
-    destroyList(settings);
+    applySettings(appData->settings, appData);
 }
 
 void initFolders(char *path)
@@ -109,7 +108,7 @@ void applySetting(char *content, void *data)
     ok = parseIni(content, key, value);
     if (ok)
     {
-        if (strcmp(key, "version") == 0)
+        if (strcmp(key, SETT_VER) == 0)
         {
             appData->version = resetString(appData->version, value);
         }
@@ -142,7 +141,7 @@ void getFileContent(List *storage, int bufferSize, FILE *fp)
 
 void printConfigFile(FILE *fp)
 {
-    printIni(fp, "version", DEFAULT_VERSION);
-    printIni(fp, "defaultProfile", DEFAULT_PROFILE);
+    printIni(fp, SETT_VER, DEFAULT_VERSION);
+    printIni(fp, SETT_DEF_PRO, DEFAULT_PROFILE);
     fclose(fp);
 }

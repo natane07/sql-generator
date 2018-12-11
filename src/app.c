@@ -2,6 +2,7 @@
 #include "..\include\menu.h"
 #include "..\include\file.h"
 #include "..\include\utils.h"
+#include "..\include\parser.h"
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -48,7 +49,6 @@ void chooseProfile(AppData *appData)
         useProfile(appData);
         break;
     case 2:
-        exit(0);
         break;
     }
 }
@@ -68,16 +68,29 @@ void createProfile(AppData *appData)
         printf(NAME_UNSAFE_ERR);
         return createProfile(appData);
     }
-    printf("%s created successfully!\n", buffer);
+    saveProfile(appData, buffer);
 }
 
 void useProfile(AppData *appData)
 {
 }
 
+void saveProfile(AppData *appData, char *pName)
+{
+    int index;
+    push(appData->existingProfiles, pName);
+    FILE *fp = fopen(PROFILES_FILE, "a");
+    printIni(fp, pName, "1");
+    fclose(fp);
+    index = findIndex(appData->settings, compareKey, SETT_DEF_PRO);
+    printf("%d", index);
+    printf("%s created successfully!\n", pName);
+}
+
 void destroy(AppData *appData)
 {
     destroyList(appData->existingProfiles);
+    destroyList(appData->settings);
     free(appData->version);
     free(appData->pName);
     free(appData);

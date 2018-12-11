@@ -10,5 +10,6 @@ void remCrlf(char *);
 char *setString(char *, char *);
 char *resetString(char *, char *);
 int isStringSafe(char *);
+int compareKey(char *, char *);
 
 #endif

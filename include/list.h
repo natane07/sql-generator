@@ -23,6 +23,7 @@ void pop(List *);
 void shift(List *);
 int has(List *, char *);
 void forEach(List *, void (*)(char *, void *), void *);
+int findIndex(List *, int (*)(char *, char *), char *);
 void destroyList(List *);
 void printList(List *);
 void printElement(char *);
