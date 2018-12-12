@@ -79,11 +79,20 @@ void saveProfile(AppData *appData, char *pName)
 {
     int index;
     push(appData->existingProfiles, pName);
-    FILE *fp = fopen(PROFILES_FILE, "a");
-    printIni(fp, pName, "1");
-    fclose(fp);
+    FILE *fp = openFile(getenv(LOCALSTORAGE), PROFILES_FILE, "a");
+    if (fp != NULL)
+    {
+        printIniToFile(fp, pName, "1");
+        fclose(fp);
+    }
     index = findIndex(appData->settings, compareKey, SETT_DEF_PRO);
-    printf("%d", index);
+    if (index != -1)
+    {
+        char buffer[MAX_SETTING_SIZE];
+        printIniToString(buffer, SETT_DEF_PRO, pName);
+        setElement(appData->settings, index, buffer);
+    }
+    printList(appData->settings);
     printf("%s created successfully!\n", pName);
 }
 

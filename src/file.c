@@ -14,7 +14,7 @@ void initFs(AppData *appData)
     char path[MAXPATHLENGTH];
     appData->settings = listInit();
     appData->existingProfiles = listInit();
-    sprintf(path, "%s", getenv("APPDATA"));
+    sprintf(path, "%s", getenv(LOCALSTORAGE));
     setDefaultData(appData);
     initFolders(path);
     initConfigFile(path, appData->settings);
@@ -70,7 +70,7 @@ void initProfilesFile(char *path, AppData *appData)
         profiles = openFile(path, PROFILES_FILE, "w");
         if (profiles != NULL)
         {
-            printIni(profiles, DEFAULT_PROFILE, "1");
+            printIniToFile(profiles, DEFAULT_PROFILE, "1");
             fclose(profiles);
         }
     }
@@ -141,7 +141,7 @@ void getFileContent(List *storage, int bufferSize, FILE *fp)
 
 void printConfigFile(FILE *fp)
 {
-    printIni(fp, SETT_VER, DEFAULT_VERSION);
-    printIni(fp, SETT_DEF_PRO, DEFAULT_PROFILE);
+    printIniToFile(fp, SETT_VER, DEFAULT_VERSION);
+    printIniToFile(fp, SETT_DEF_PRO, DEFAULT_PROFILE);
     fclose(fp);
 }

@@ -20,6 +20,7 @@
 #define DEFAULT_VERSION "0.2"
 
 //PATHS
+#define LOCALSTORAGE "APPDATA"
 #define MAIN_DIR "sql-generator"
 #define CONFIG_DIR "sql-generator\\config"
 #define DATA_DIR "sql-generator\\data"

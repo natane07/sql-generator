@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 int parseIni(char *, char *, char *);
-void printIni(FILE *, char *, char *);
+void printIniToFile(FILE *, char *, char *);
+void printIniToString(char *, char *, char *);
 
 #endif
