@@ -2,6 +2,8 @@
 
 #define LIST_H
 
+#include <stdio.h>
+
 typedef struct Element Element;
 struct Element
 {
@@ -26,6 +28,7 @@ void forEach(List *, void (*)(char *, void *), void *);
 int findIndex(List *, int (*)(char *, char *), char *);
 void destroyList(List *);
 void printList(List *);
+void writeListToFile(List *, FILE *);
 void printElement(char *);
 Element *getElement(List *, int);
 void setElement(List *, int, char *);

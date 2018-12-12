@@ -70,7 +70,7 @@ void initProfilesFile(char *path, AppData *appData)
         profiles = openFile(path, PROFILES_FILE, "w");
         if (profiles != NULL)
         {
-            printIniToFile(profiles, DEFAULT_PROFILE, "1");
+            fprintf(profiles, "%s\n", DEFAULT_PROFILE);
             fclose(profiles);
         }
     }

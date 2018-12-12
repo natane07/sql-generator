@@ -82,7 +82,7 @@ void saveProfile(AppData *appData, char *pName)
     FILE *fp = openFile(getenv(LOCALSTORAGE), PROFILES_FILE, "a");
     if (fp != NULL)
     {
-        printIniToFile(fp, pName, "1");
+        fprintf(fp, "%s\n", pName);
         fclose(fp);
     }
     index = findIndex(appData->settings, compareKey, SETT_DEF_PRO);
@@ -91,13 +91,18 @@ void saveProfile(AppData *appData, char *pName)
         char buffer[MAX_SETTING_SIZE];
         printIniToString(buffer, SETT_DEF_PRO, pName);
         setElement(appData->settings, index, buffer);
+        fp = openFile(getenv(LOCALSTORAGE), CONFIG_FILE, "w");
+        if (fp != NULL)
+        {
+            writeListToFile(appData->settings, fp);
+        }
     }
-    printList(appData->settings);
     printf("%s created successfully!\n", pName);
 }
 
 void destroy(AppData *appData)
 {
+    printList(appData->existingProfiles);
     destroyList(appData->existingProfiles);
     destroyList(appData->settings);
     free(appData->version);
