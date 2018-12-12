@@ -102,7 +102,6 @@ void saveProfile(AppData *appData, char *pName)
 
 void destroy(AppData *appData)
 {
-    printList(appData->existingProfiles);
     destroyList(appData->existingProfiles);
     destroyList(appData->settings);
     free(appData->version);

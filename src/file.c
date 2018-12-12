@@ -63,6 +63,10 @@ void initProfilesFile(char *path, AppData *appData)
         if (profiles != NULL)
         {
             getFileContent(appData->existingProfiles, MAX_NAME_LENGTH, profiles);
+            if (appData->existingProfiles->length > 1)
+            {
+                shift(appData->existingProfiles);
+            }
         }
     }
     else
