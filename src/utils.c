@@ -44,7 +44,7 @@ char *setString(char *destination, char *source)
 char *resetString(char *destination, char *source)
 {
     free(destination);
-    setString(destination, source);
+    destination = setString(destination, source);
     return destination;
 }
 

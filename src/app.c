@@ -68,16 +68,35 @@ void createProfile(AppData *appData)
         printf(NAME_UNSAFE_ERR);
         return createProfile(appData);
     }
+    if (strlen(buffer) < MIN_NAME_LENGTH)
+    {
+        printf(LENGTH_ERR);
+        return createProfile(appData);
+    }
     saveProfile(appData, buffer);
+    free(buffer);
+    return chooseProfile(appData);
 }
 
 void useProfile(AppData *appData)
 {
+    char *buffer = NULL;
+    printf("Enter profile name: ");
+    buffer = getString(buffer, MAX_NAME_LENGTH);
+    if (has(appData->existingProfiles, buffer))
+    {
+        appData->pName = resetString(appData->pName, buffer);
+        free(buffer);
+        return loadProfile(appData);
+    }
+    printf(NAME_NOT_EXISTS_ERR);
+    return useProfile(appData);
 }
 
 void saveProfile(AppData *appData, char *pName)
 {
     int index;
+    appData->pName = resetString(appData->pName, pName);
     push(appData->existingProfiles, pName);
     FILE *fp = openFile(getenv(LOCALSTORAGE), PROFILES_FILE, "a");
     if (fp != NULL)
@@ -98,6 +117,12 @@ void saveProfile(AppData *appData, char *pName)
         }
     }
     printf("%s created successfully!\n", pName);
+}
+
+void loadProfile(AppData *appData)
+{
+    printf("%s loaded successfully!\n", appData->pName);
+    initUserFile();
 }
 
 void destroy(AppData *appData)

@@ -80,6 +80,10 @@ void initProfilesFile(char *path, AppData *appData)
     }
 }
 
+void initUserFile()
+{
+}
+
 int fileExists(char *basePath, char *filePath)
 {
     char fileLocation[MAXPATHLENGTH];
