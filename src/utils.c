@@ -5,27 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int getChoice()
-{
-    int choice;
-    printf("Enter choice: ");
-    fflush(stdin);
-    choice = fgetc(stdin) - 48;
-    return choice;
-}
-
-char *getString(char *string, int maxSize)
-{
-    char buffer[maxSize];
-    if (string != NULL)
-        free(string);
-    fflush(stdin);
-    fgets(buffer, maxSize, stdin);
-    remCrlf(buffer);
-    string = setString(string, buffer);
-    return string;
-}
-
 void remCrlf(char *str)
 {
     if (str[strlen(str) - 1] == '\n')
@@ -44,8 +23,7 @@ char *setString(char *destination, char *source)
 char *resetString(char *destination, char *source)
 {
     free(destination);
-    destination = setString(destination, source);
-    return destination;
+    return setString(destination, source);
 }
 
 int isStringSafe(char *str)
@@ -75,4 +53,9 @@ int compareKey(char *ini, char *comparator)
         return strcmp(comparator, key) == 0;
     }
     return 0;
+}
+
+void printError(const char *error)
+{
+    MessageBox(NULL, error, "Error!", MB_ICONERROR | MB_OK);
 }

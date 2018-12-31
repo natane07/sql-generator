@@ -2,8 +2,9 @@
 
 #define MENU_H
 
-#include "app.h"
+#include <windows.h>
 
-void displayMenu(AppData *);
+void createMainMenu(HWND, HWND *);
+void destroyMainMenu(HWND *);
 
 #endif

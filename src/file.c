@@ -6,8 +6,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+#include <io.h>
 
 void initFs(AppData *appData)
 {
@@ -88,7 +88,7 @@ int fileExists(char *basePath, char *filePath)
 {
     char fileLocation[MAXPATHLENGTH];
     sprintf(fileLocation, "%s\\%s", basePath, filePath);
-    if (access(fileLocation, F_OK) != -1)
+    if (_access(fileLocation, 0) != -1)
         return 1;
     return 0;
 }

@@ -1,10 +1,43 @@
-#include "include\menu.h"
 #include "include\app.h"
+#include "include\utils.h"
+#include <windows.h>
+#include <string.h>
 
-int main(int argc, char **argv)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    AppData *appData = init();
-    displayMenu(appData);
-    mainLoop(appData);
-    destroy(appData);
+    WNDCLASSEX wc;
+    HWND hwnd;
+    MSG Msg;
+    const char className[] = MAINWIN_CLASS;
+
+    createClass(&wc, hInstance, className);
+    if (!RegisterClassEx(&wc))
+    {
+        printError(ERR_WIN_REG);
+        return 0;
+    }
+
+    hwnd = CreateWindowEx(
+        WS_EX_CLIENTEDGE,
+        className,
+        APP_NAME,
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+        NULL, NULL, hInstance, NULL);
+
+    if (hwnd == NULL)
+    {
+        printError(ERR_WIN_CR);
+        return 0;
+    }
+
+    ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
+
+    while (GetMessage(&Msg, NULL, 0, 0) > 0)
+    {
+        TranslateMessage(&Msg);
+        DispatchMessage(&Msg);
+    }
+    return (int)Msg.wParam;
 }
