@@ -46,6 +46,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case CRTABLE_ID:
             destroyMainMenu(mainMenuControls);
             break;
+        case PROFILESEL_ID:
+            switch (HIWORD(wParam))
+            {
+            case CBN_SELCHANGE:
+            {
+                int index;
+                char buffer[MAX_SENT_LENGTH];
+                index = getComboCursor(hwnd, PROFILESEL_ID);
+                appData.pName = updateField(appData.pName, hwnd, PROFILESEL_ID, index);
+                setMessage(buffer, appData.pName);
+                sendWinText(hwnd, PROFILEHINT_ID, buffer);
+            }
+            break;
+            }
+            break;
         default:
             break;
         }
@@ -106,12 +121,33 @@ void createWindowBar(HWND hwnd)
 void setExistingProfiles(HWND hwnd, AppData *appData)
 {
     Element *current = appData->existingProfiles->first;
+    int index;
+    char buffer[MAX_SENT_LENGTH];
     while (current != NULL)
     {
-        SendDlgItemMessage(hwnd, PROFILESEL_ID, CB_ADDSTRING, (WPARAM)0, (LPARAM)current->content);
+        addStringToCombo(hwnd, PROFILESEL_ID, current->content);
         current = current->next;
     }
-    SendDlgItemMessage(hwnd, PROFILESEL_ID, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
+    index = findStringIndexInCombo(hwnd, PROFILESEL_ID, appData->pName);
+    if (index == CB_ERR)
+        index = 0;
+    setComboCursor(hwnd, PROFILESEL_ID, index);
+    appData->pName = updateField(appData->pName, hwnd, PROFILESEL_ID, index);
+    setMessage(buffer, appData->pName);
+    sendWinText(hwnd, PROFILEHINT_ID, buffer);
+}
+
+void setMessage(char *message, char *pName)
+{
+    sprintf(message, "%s %s!", PROFILEHINT_MSG, pName);
+}
+
+char *updateField(char *destination, HWND hwnd, int controlId, int idString)
+{
+    char buffer[MAX_NAME_LENGTH];
+    initMemory(buffer, MAX_NAME_LENGTH);
+    getStringFromCombo(hwnd, controlId, idString, buffer);
+    return resetString(destination, buffer);
 }
 
 void createProfile(AppData *appData)

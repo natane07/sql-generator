@@ -4,11 +4,17 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <windows.h>
 
 void remCrlf(char *str)
 {
     if (str[strlen(str) - 1] == '\n')
         str[strlen(str) - 1] = '\0';
+}
+
+void initMemory(char *str, int length)
+{
+    memset(str, '\0', length);
 }
 
 char *setString(char *destination, char *source)
@@ -58,4 +64,34 @@ int compareKey(char *ini, char *comparator)
 void printError(const char *error)
 {
     MessageBox(NULL, error, "Error!", MB_ICONERROR | MB_OK);
+}
+
+void addStringToCombo(HWND hwnd, int controlId, char *content)
+{
+    SendDlgItemMessage(hwnd, controlId, CB_ADDSTRING, (WPARAM)0, (LPARAM)content);
+}
+
+int findStringIndexInCombo(HWND hwnd, int controlId, char *content)
+{
+    return SendDlgItemMessage(hwnd, controlId, CB_FINDSTRING, (WPARAM)1, (LPARAM)content);
+}
+
+void setComboCursor(HWND hwnd, int controlId, int position)
+{
+    SendDlgItemMessage(hwnd, controlId, CB_SETCURSEL, (WPARAM)position, (LPARAM)0);
+}
+
+int getComboCursor(HWND hwnd, int controlId)
+{
+    return SendDlgItemMessage(hwnd, controlId, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+}
+
+void sendWinText(HWND hwnd, int controlId, char *text)
+{
+    SendDlgItemMessage(hwnd, controlId, WM_SETTEXT, (WPARAM)0, (LPARAM)text);
+}
+
+void getStringFromCombo(HWND hwnd, int controlId, int index, char *destination)
+{
+    SendDlgItemMessage(hwnd, controlId, CB_GETLBTEXT, (WPARAM)index, (LPARAM)destination);
 }

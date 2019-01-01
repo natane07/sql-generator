@@ -120,8 +120,9 @@ void applySetting(char *content, void *data)
         {
             appData->version = resetString(appData->version, value);
         }
-        else if (strcmp(key, "something") == 0)
+        else if (strcmp(key, SETT_DEF_PRO) == 0)
         {
+            appData->pName = resetString(appData->pName, value);
         }
     }
 }
@@ -138,6 +139,8 @@ void setDefaultData(AppData *appData)
 void getFileContent(List *storage, int bufferSize, FILE *fp)
 {
     char *buffer = malloc(bufferSize * sizeof(char));
+    if (buffer == NULL)
+        exit(-1);
     while (fgets(buffer, bufferSize, fp) != NULL)
     {
         remCrlf(buffer);

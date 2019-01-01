@@ -27,7 +27,7 @@
 #define PROFILESEL_ID 3
 #define PROFILESEL_MSG "Choose Profile"
 #define PROFILEHINT_ID 4
-#define PROFILEHINT_MSG "Welcome !"
+#define PROFILEHINT_MSG "Welcome"
 
 typedef struct AppData AppData;
 struct AppData
@@ -45,6 +45,8 @@ void createClass(WNDCLASSEX *, HINSTANCE, const char *);
 void loadIcon(HWND, const char *);
 void createWindowBar(HWND);
 void setExistingProfiles(HWND, AppData *);
+void setMessage(char *, char *);
+char *updateField(char *, HWND, int, int);
 void createProfile(AppData *);
 void useProfile(AppData *);
 void saveProfile(AppData *, char *);
