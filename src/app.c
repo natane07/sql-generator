@@ -203,7 +203,7 @@ void saveProfile(AppData *appData, char *pName)
     // index = findIndex(appData->settings, compareKey, SETT_DEF_PRO);
     // if (index != -1)
     // {
-    //     char buffer[MAX_SETTING_SIZE];
+    //     char buffer[MAX_SETTING_LENGTH];
     //     printIniToString(buffer, SETT_DEF_PRO, pName);
     //     setElement(appData->settings, index, buffer);
     //     fp = openFile(getenv(LOCALSTORAGE), CONFIG_FILE, "w");

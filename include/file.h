@@ -7,11 +7,12 @@
 #include <stdio.h>
 
 //MAX SIZES
-#define MAX_SETTING_SIZE 60
+#define MAX_SETTING_LENGTH 60
+#define MIN_SETTING_LENGTH 3
 #define MAX_NAME_LENGTH 30
 #define MIN_NAME_LENGTH 3
 #define MAX_SENT_LENGTH 80
-#define MAXPATHLENGTH 260
+#define MAX_PATH_LENGTH 260
 
 //SETTINGS
 #define SETT_DEF_PRO "defaultProfile"
@@ -39,7 +40,7 @@ FILE *openFile(char *, char *, char *);
 void applySettings(List *, AppData *);
 void applySetting(char *, void *);
 void setDefaultData(AppData *);
-void getFileContent(List *, int, FILE *);
+void getFileContent(List *, int, int, FILE *);
 void printConfigFile(FILE *);
 
 #endif

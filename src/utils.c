@@ -51,8 +51,8 @@ int isStringSafe(char *str)
 int compareKey(char *ini, char *comparator)
 {
     int ok;
-    char key[MAX_SETTING_SIZE];
-    char value[MAX_SETTING_SIZE];
+    char key[MAX_SETTING_LENGTH];
+    char value[MAX_SETTING_LENGTH];
     ok = parseIni(ini, key, value);
     if (ok)
     {

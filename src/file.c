@@ -11,7 +11,7 @@
 
 void initFs(AppData *appData)
 {
-    char path[MAXPATHLENGTH];
+    char path[MAX_PATH_LENGTH];
     appData->settings = listInit();
     appData->existingProfiles = listInit();
     sprintf(path, "%s", getenv(LOCALSTORAGE));
@@ -24,7 +24,7 @@ void initFs(AppData *appData)
 
 void initFolders(char *path)
 {
-    char dirLocation[MAXPATHLENGTH];
+    char dirLocation[MAX_PATH_LENGTH];
     sprintf(dirLocation, "%s\\%s", path, MAIN_DIR);
     CreateDirectory(dirLocation, NULL);
     sprintf(dirLocation, "%s\\%s", path, CONFIG_DIR);
@@ -41,7 +41,7 @@ void initConfigFile(char *path, List *settings)
         config = openFile(path, CONFIG_FILE, "r");
         if (config != NULL)
         {
-            getFileContent(settings, MAX_SETTING_SIZE, config);
+            getFileContent(settings, MAX_SETTING_LENGTH, MIN_SETTING_LENGTH, config);
         }
     }
     else
@@ -62,7 +62,7 @@ void initProfilesFile(char *path, AppData *appData)
         profiles = openFile(path, PROFILES_FILE, "r");
         if (profiles != NULL)
         {
-            getFileContent(appData->existingProfiles, MAX_NAME_LENGTH, profiles);
+            getFileContent(appData->existingProfiles, MAX_NAME_LENGTH, MIN_NAME_LENGTH, profiles);
             if (appData->existingProfiles->length > 1)
             {
                 shift(appData->existingProfiles);
@@ -86,7 +86,7 @@ void initUserFile()
 
 int fileExists(char *basePath, char *filePath)
 {
-    char fileLocation[MAXPATHLENGTH];
+    char fileLocation[MAX_PATH_LENGTH];
     sprintf(fileLocation, "%s\\%s", basePath, filePath);
     if (_access(fileLocation, 0) != -1)
         return 1;
@@ -95,7 +95,7 @@ int fileExists(char *basePath, char *filePath)
 
 FILE *openFile(char *basePath, char *filePath, char *mode)
 {
-    char fileLocation[MAXPATHLENGTH];
+    char fileLocation[MAX_PATH_LENGTH];
     FILE *file = NULL;
     sprintf(fileLocation, "%s\\%s", basePath, filePath);
     file = fopen(fileLocation, mode);
@@ -110,8 +110,8 @@ void applySettings(List *settings, AppData *appData)
 void applySetting(char *content, void *data)
 {
     AppData *appData = data;
-    char key[MAX_SETTING_SIZE];
-    char value[MAX_SETTING_SIZE];
+    char key[MAX_SETTING_LENGTH];
+    char value[MAX_SETTING_LENGTH];
     int ok;
     ok = parseIni(content, key, value);
     if (ok)
@@ -136,7 +136,7 @@ void setDefaultData(AppData *appData)
     push(appData->existingProfiles, DEFAULT_PROFILE);
 }
 
-void getFileContent(List *storage, int bufferSize, FILE *fp)
+void getFileContent(List *storage, int bufferSize, int minLength, FILE *fp)
 {
     char *buffer = malloc(bufferSize * sizeof(char));
     if (buffer == NULL)
@@ -144,7 +144,8 @@ void getFileContent(List *storage, int bufferSize, FILE *fp)
     while (fgets(buffer, bufferSize, fp) != NULL)
     {
         remCrlf(buffer);
-        push(storage, buffer);
+        if (strlen(buffer) > minLength)
+            push(storage, buffer);
     }
     fclose(fp);
     free(buffer);
