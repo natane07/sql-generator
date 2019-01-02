@@ -13,11 +13,13 @@ char *resetString(char *, char *);
 int isStringSafe(char *);
 int compareKey(char *, char *);
 void printError(const char *);
-void addStringToCombo(HWND, int, char *);
+void printInfo(const char *);
+int addStringToCombo(HWND, int, char *);
 int findStringIndexInCombo(HWND, int, char *);
 void setComboCursor(HWND, int, int);
 int getComboCursor(HWND, int);
 void sendWinText(HWND, int, char *);
 void getStringFromCombo(HWND, int, int, char *);
+void getStringFromWin(HWND, int, char *, int);
 
 #endif

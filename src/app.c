@@ -25,7 +25,7 @@ void setAppData(AppData *appData)
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    static HWND mainMenuControls[4];
+    static HWND mainMenuControls[MAIN_WIN_CTRL_NUM];
     static AppData appData;
     switch (msg)
     {
@@ -35,6 +35,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         createMainMenu(hwnd, mainMenuControls);
         initAppdata(&appData);
         setExistingProfiles(hwnd, &appData);
+        setVersion(hwnd, &appData);
         break;
     case WM_COMMAND:
         switch (LOWORD(wParam))
@@ -60,6 +61,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             }
             break;
             }
+            break;
+        case PROFILECRSUB_ID:
+            createProfile(hwnd, &appData);
             break;
         default:
             break;
@@ -118,6 +122,13 @@ void createWindowBar(HWND hwnd)
     SetMenu(hwnd, hMenu);
 }
 
+void setVersion(HWND hwnd, AppData *appData)
+{
+    char buffer[MAX_SENT_LENGTH];
+    sprintf(buffer, "%s [%s]", VERSIONHINT_MSG, appData->version);
+    sendWinText(hwnd, VERSIONHINT_ID, buffer);
+}
+
 void setExistingProfiles(HWND hwnd, AppData *appData)
 {
     Element *current = appData->existingProfiles->first;
@@ -150,75 +161,74 @@ char *updateField(char *destination, HWND hwnd, int controlId, int idString)
     return resetString(destination, buffer);
 }
 
-void createProfile(AppData *appData)
+void createProfile(HWND hwnd, AppData *appData)
 {
-    // char *buffer = NULL;
-    // printf("Enter new profile name: ");
-    // buffer = getString(buffer, MAX_NAME_LENGTH);
-    // if (has(appData->existingProfiles, buffer))
-    // {
-    //     printf(ERR_NAME_TAKEN);
-    //     return createProfile(appData);
-    // }
-    // if (!isStringSafe(buffer))
-    // {
-    //     printf(ERR_NAME_UNSAFE);
-    //     return createProfile(appData);
-    // }
-    // if (strlen(buffer) < MIN_NAME_LENGTH)
-    // {
-    //     printf(ERR_NAME_LENGTH);
-    //     return createProfile(appData);
-    // }
-    // saveProfile(appData, buffer);
-    // free(buffer);
+    char buffer[MAX_NAME_LENGTH];
+    initMemory(buffer, MAX_NAME_LENGTH);
+    getStringFromWin(hwnd, PROFILECR_ID, buffer, MAX_NAME_LENGTH);
+    int ok = checkProfileName(appData->existingProfiles, buffer);
+    if (ok)
+    {
+        saveProfile(hwnd, appData, buffer);
+    }
 }
 
-void useProfile(AppData *appData)
+void saveProfile(HWND hwnd, AppData *appData, char *pName)
 {
-    // char *buffer = NULL;
-    // printf("Enter profile name: ");
-    // buffer = getString(buffer, MAX_NAME_LENGTH);
-    // if (has(appData->existingProfiles, buffer))
-    // {
-    //     appData->pName = resetString(appData->pName, buffer);
-    //     free(buffer);
-    //     return loadProfile(appData);
-    // }
-    // printf(ERR_NAME_NOT_EXISTS);
-    // return useProfile(appData);
-}
-
-void saveProfile(AppData *appData, char *pName)
-{
-    // int index;
-    // appData->pName = resetString(appData->pName, pName);
-    // push(appData->existingProfiles, pName);
-    // FILE *fp = openFile(getenv(LOCALSTORAGE), PROFILES_FILE, "a");
-    // if (fp != NULL)
-    // {
-    //     fprintf(fp, "%s\n", pName);
-    //     fclose(fp);
-    // }
-    // index = findIndex(appData->settings, compareKey, SETT_DEF_PRO);
-    // if (index != -1)
-    // {
-    //     char buffer[MAX_SETTING_LENGTH];
-    //     printIniToString(buffer, SETT_DEF_PRO, pName);
-    //     setElement(appData->settings, index, buffer);
-    //     fp = openFile(getenv(LOCALSTORAGE), CONFIG_FILE, "w");
-    //     if (fp != NULL)
-    //     {
-    //         writeListToFile(appData->settings, fp);
-    //     }
-    // }
-    // printf("%s created successfully!\n", pName);
+    int index;
+    char buffer[MAX_SENT_LENGTH];
+    appData->pName = resetString(appData->pName, pName);
+    push(appData->existingProfiles, pName);
+    index = addStringToCombo(hwnd, PROFILESEL_ID, pName);
+    setComboCursor(hwnd, PROFILESEL_ID, index);
+    setMessage(buffer, appData->pName);
+    sendWinText(hwnd, PROFILEHINT_ID, buffer);
+    FILE *fp = openFile(getenv(LOCALSTORAGE), PROFILES_FILE, "a");
+    if (fp != NULL)
+    {
+        fprintf(fp, "%s\n", pName);
+        fclose(fp);
+    }
+    index = findIndex(appData->settings, compareKey, SETT_DEF_PRO);
+    if (index != -1)
+    {
+        char buffer[MAX_SETTING_LENGTH];
+        printIniToString(buffer, SETT_DEF_PRO, pName);
+        setElement(appData->settings, index, buffer);
+        fp = openFile(getenv(LOCALSTORAGE), CONFIG_FILE, "w");
+        if (fp != NULL)
+        {
+            writeListToFile(appData->settings, fp);
+        }
+    }
+    sprintf(buffer, "%s created successfully!", pName);
+    printInfo(buffer);
 }
 
 void loadProfile(AppData *appData)
 {
     // printf("%s loaded successfully!\n", appData->pName);
     // initUserFile();
+}
+
+int checkProfileName(List *profiles, char *profile)
+{
+    if (has(profiles, profile))
+    {
+        printError(ERR_NAME_TAKEN);
+        return 0;
+    }
+    if (!isStringSafe(profile))
+    {
+        printError(ERR_NAME_UNSAFE);
+        return 0;
+    }
+    if (strlen(profile) < MIN_NAME_LENGTH || strlen(profile) >= MAX_NAME_LENGTH)
+    {
+        printError(ERR_NAME_LENGTH);
+        return 0;
+    }
+    return 1;
 }
 
 void destroy(AppData *appData)

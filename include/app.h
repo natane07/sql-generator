@@ -18,6 +18,7 @@
 #define ERR_NAME_LENGTH "Profile name too short or too long!"
 
 //controls
+#define MAIN_WIN_CTRL_NUM 8
 #define EXIT_ID 0
 #define EXIT_MSG "Exit"
 #define CRTABLE_ID 1
@@ -28,6 +29,14 @@
 #define PROFILESEL_MSG "Choose Profile"
 #define PROFILEHINT_ID 4
 #define PROFILEHINT_MSG "Welcome"
+#define VERSIONHINT_ID 5
+#define VERSIONHINT_MSG "SQL-Generator"
+#define PROFILECR_ID 6
+#define PROFILECR_MSG ""
+#define PROFILECRSUB_ID 7
+#define PROFILECRSUB_MSG "Create new profile"
+#define MENUHINT_ID 8
+#define MENUHINT_MSG "Not the owner of the currently selected profile? Select another or create a new one!"
 
 typedef struct AppData AppData;
 struct AppData
@@ -44,13 +53,14 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void createClass(WNDCLASSEX *, HINSTANCE, const char *);
 void loadIcon(HWND, const char *);
 void createWindowBar(HWND);
+void setVersion(HWND, AppData *);
 void setExistingProfiles(HWND, AppData *);
 void setMessage(char *, char *);
 char *updateField(char *, HWND, int, int);
-void createProfile(AppData *);
-void useProfile(AppData *);
-void saveProfile(AppData *, char *);
+void createProfile(HWND hwnd, AppData *);
+void saveProfile(HWND, AppData *, char *);
 void loadProfile(AppData *);
+int checkProfileName(List *, char *);
 void destroy(AppData *);
 
 #endif

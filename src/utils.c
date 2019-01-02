@@ -66,9 +66,14 @@ void printError(const char *error)
     MessageBox(NULL, error, "Error!", MB_ICONERROR | MB_OK);
 }
 
-void addStringToCombo(HWND hwnd, int controlId, char *content)
+void printInfo(const char *info)
 {
-    SendDlgItemMessage(hwnd, controlId, CB_ADDSTRING, (WPARAM)0, (LPARAM)content);
+    MessageBox(NULL, info, "Infomation", MB_ICONINFORMATION | MB_OK);
+}
+
+int addStringToCombo(HWND hwnd, int controlId, char *content)
+{
+    return SendDlgItemMessage(hwnd, controlId, CB_ADDSTRING, (WPARAM)0, (LPARAM)content);
 }
 
 int findStringIndexInCombo(HWND hwnd, int controlId, char *content)
@@ -94,4 +99,9 @@ void sendWinText(HWND hwnd, int controlId, char *text)
 void getStringFromCombo(HWND hwnd, int controlId, int index, char *destination)
 {
     SendDlgItemMessage(hwnd, controlId, CB_GETLBTEXT, (WPARAM)index, (LPARAM)destination);
+}
+
+void getStringFromWin(HWND hwnd, int controlId, char *destination, int maxLength)
+{
+    SendDlgItemMessage(hwnd, controlId, WM_GETTEXT, (WPARAM)maxLength, (LPARAM)destination);
 }
