@@ -1,6 +1,9 @@
 #include <windows.h>
 #include ".\..\include\menu.h"
 #include ".\..\include\app.h"
+#include ".\..\include\file.h"
+#include ".\..\include\utils.h"
+#include ".\..\include\parser.h"
 
 void createMainMenu(HWND hwnd, HWND *mainMenuControls)
 {
@@ -23,4 +26,130 @@ void destroyMainMenu(HWND *mainMenuControls)
     int i;
     for (i = 0; i < MAIN_WIN_CTRL_NUM; i++)
         DestroyWindow(mainMenuControls[i]);
+}
+
+void createWindowBar(HWND hwnd)
+{
+    HMENU hMenu, hSubMenu;
+    hMenu = CreateMenu();
+    hSubMenu = CreatePopupMenu();
+    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu, "Menu");
+    AppendMenu(hSubMenu, MF_STRING, EXIT_ID, EXIT_MSG);
+    SetMenu(hwnd, hMenu);
+}
+
+void setVersion(HWND hwnd, AppData *appData)
+{
+    char buffer[MAX_SENT_LENGTH];
+    sprintf(buffer, "%s [%s]", VERSIONHINT_MSG, appData->version);
+    sendWinText(hwnd, VERSIONHINT_ID, buffer);
+}
+
+void setExistingProfiles(HWND hwnd, AppData *appData)
+{
+    Element *current = appData->existingProfiles->first;
+    int index;
+    char buffer[MAX_SENT_LENGTH];
+    while (current != NULL)
+    {
+        addStringToCombo(hwnd, PROFILESEL_ID, current->content);
+        current = current->next;
+    }
+    index = findStringIndexInCombo(hwnd, PROFILESEL_ID, appData->pName);
+    if (index == CB_ERR)
+        index = 0;
+    setComboCursor(hwnd, PROFILESEL_ID, index);
+    appData->pName = updateField(appData->pName, hwnd, PROFILESEL_ID, index);
+    setMessage(buffer, appData->pName);
+    sendWinText(hwnd, PROFILEHINT_ID, buffer);
+}
+
+void setMessage(char *message, char *pName)
+{
+    sprintf(message, "%s %s!", PROFILEHINT_MSG, pName);
+}
+
+char *updateField(char *destination, HWND hwnd, int controlId, int idString)
+{
+    char buffer[MAX_NAME_LENGTH];
+    initMemory(buffer, MAX_NAME_LENGTH);
+    getStringFromCombo(hwnd, controlId, idString, buffer);
+    return resetString(destination, buffer);
+}
+
+void createProfile(HWND hwnd, AppData *appData)
+{
+    char buffer[MAX_NAME_LENGTH];
+    initMemory(buffer, MAX_NAME_LENGTH);
+    getStringFromWin(hwnd, PROFILECR_ID, buffer, MAX_NAME_LENGTH);
+    int ok = checkProfileName(appData->existingProfiles, buffer, CREATE);
+    if (ok)
+    {
+        saveProfile(hwnd, appData, buffer);
+    }
+}
+
+void saveProfile(HWND hwnd, AppData *appData, char *pName)
+{
+    int index;
+    char buffer[MAX_SENT_LENGTH];
+    appData->pName = resetString(appData->pName, pName);
+    push(appData->existingProfiles, pName);
+    index = addStringToCombo(hwnd, PROFILESEL_ID, pName);
+    setComboCursor(hwnd, PROFILESEL_ID, index);
+    setMessage(buffer, appData->pName);
+    sendWinText(hwnd, PROFILEHINT_ID, buffer);
+    FILE *fp = openFile(getenv(LOCALSTORAGE), PROFILES_FILE, "a");
+    if (fp != NULL)
+    {
+        fprintf(fp, "%s\n", pName);
+        fclose(fp);
+    }
+    index = findIndex(appData->settings, compareKey, SETT_DEF_PRO);
+    if (index != -1)
+    {
+        char buffer[MAX_SETTING_LENGTH];
+        printIniToString(buffer, SETT_DEF_PRO, pName);
+        setElement(appData->settings, index, buffer);
+        fp = openFile(getenv(LOCALSTORAGE), CONFIG_FILE, "w");
+        if (fp != NULL)
+        {
+            writeListToFile(appData->settings, fp);
+        }
+    }
+    sprintf(buffer, "%s %s", pName, OK_PROFILE_CR);
+    printInfo(buffer);
+}
+
+int loadProfile(AppData *appData)
+{
+    char buffer[MAX_SENT_LENGTH];
+    sprintf(buffer, "%s %s", appData->pName, OK_PROFILE_LD);
+    int ok = checkProfileName(appData->existingProfiles, appData->pName, LOAD);
+    if (ok)
+    {
+        printInfo(buffer);
+        return 1;
+    }
+    return 0;
+}
+
+int checkProfileName(List *profiles, char *profile, int mode)
+{
+    if (has(profiles, profile) && mode == CREATE)
+    {
+        printError(ERR_NAME_TAKEN);
+        return 0;
+    }
+    if (!isStringSafe(profile))
+    {
+        printError(ERR_NAME_UNSAFE);
+        return 0;
+    }
+    if (strlen(profile) < MIN_NAME_LENGTH || strlen(profile) >= MAX_NAME_LENGTH)
+    {
+        printError(ERR_NAME_LENGTH);
+        return 0;
+    }
+    return 1;
 }

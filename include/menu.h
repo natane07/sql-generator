@@ -2,9 +2,40 @@
 
 #define MENU_H
 
+//controls
+#define MAIN_WIN_CTRL_NUM 8
+#define EXIT_ID 0
+#define EXIT_MSG "Exit"
+#define CRTABLE_ID 1
+#define CRTABLE_MSG "Create SQL Model"
+#define INSDATA_ID 2
+#define INSDATA_MSG "Generate SQL Data"
+#define PROFILESEL_ID 3
+#define PROFILESEL_MSG "Choose Profile"
+#define PROFILEHINT_ID 4
+#define PROFILEHINT_MSG "Welcome"
+#define VERSIONHINT_ID 5
+#define VERSIONHINT_MSG "SQL-Generator"
+#define PROFILECR_ID 6
+#define PROFILECR_MSG ""
+#define PROFILECRSUB_ID 7
+#define PROFILECRSUB_MSG "Create new profile"
+#define MENUHINT_ID 8
+#define MENUHINT_MSG "Not the owner of the currently selected profile? Select another or create a new one!"
+
 #include <windows.h>
+#include "./app.h"
 
 void createMainMenu(HWND, HWND *);
 void destroyMainMenu(HWND *);
+void createWindowBar(HWND);
+void setVersion(HWND, AppData *);
+void setExistingProfiles(HWND, AppData *);
+void setMessage(char *, char *);
+char *updateField(char *, HWND, int, int);
+void createProfile(HWND hwnd, AppData *);
+void saveProfile(HWND, AppData *, char *);
+int loadProfile(AppData *);
+int checkProfileName(List *, char *, int);
 
 #endif
