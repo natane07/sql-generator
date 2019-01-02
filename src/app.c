@@ -45,8 +45,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             PostMessage(hwnd, WM_CLOSE, 0, 0);
             break;
         case CRTABLE_ID:
-            destroyMainMenu(mainMenuControls);
-            break;
+        {
+            int ok = loadProfile(&appData);
+            if (ok)
+                destroyMainMenu(mainMenuControls);
+        }
+        break;
         case PROFILESEL_ID:
             switch (HIWORD(wParam))
             {
@@ -166,7 +170,7 @@ void createProfile(HWND hwnd, AppData *appData)
     char buffer[MAX_NAME_LENGTH];
     initMemory(buffer, MAX_NAME_LENGTH);
     getStringFromWin(hwnd, PROFILECR_ID, buffer, MAX_NAME_LENGTH);
-    int ok = checkProfileName(appData->existingProfiles, buffer);
+    int ok = checkProfileName(appData->existingProfiles, buffer, CREATE);
     if (ok)
     {
         saveProfile(hwnd, appData, buffer);
@@ -201,19 +205,26 @@ void saveProfile(HWND hwnd, AppData *appData, char *pName)
             writeListToFile(appData->settings, fp);
         }
     }
-    sprintf(buffer, "%s created successfully!", pName);
+    sprintf(buffer, "%s %s", pName, OK_PROFILE_CR);
     printInfo(buffer);
 }
 
-void loadProfile(AppData *appData)
+int loadProfile(AppData *appData)
 {
-    // printf("%s loaded successfully!\n", appData->pName);
-    // initUserFile();
+    char buffer[MAX_SENT_LENGTH];
+    sprintf(buffer, "%s %s", appData->pName, OK_PROFILE_LD);
+    int ok = checkProfileName(appData->existingProfiles, appData->pName, LOAD);
+    if (ok)
+    {
+        printInfo(buffer);
+        return 1;
+    }
+    return 0;
 }
 
-int checkProfileName(List *profiles, char *profile)
+int checkProfileName(List *profiles, char *profile, int mode)
 {
-    if (has(profiles, profile))
+    if (has(profiles, profile) && mode == CREATE)
     {
         printError(ERR_NAME_TAKEN);
         return 0;

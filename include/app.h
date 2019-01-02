@@ -17,6 +17,10 @@
 #define ERR_NAME_UNSAFE "Profile names should only use alphanumeric characters!"
 #define ERR_NAME_LENGTH "Profile name too short or too long!"
 
+//success
+#define OK_PROFILE_CR "created successfully!"
+#define OK_PROFILE_LD "loaded successfully!"
+
 //controls
 #define MAIN_WIN_CTRL_NUM 8
 #define EXIT_ID 0
@@ -37,6 +41,10 @@
 #define PROFILECRSUB_MSG "Create new profile"
 #define MENUHINT_ID 8
 #define MENUHINT_MSG "Not the owner of the currently selected profile? Select another or create a new one!"
+
+//check profile name function modes
+#define CREATE 0
+#define LOAD 1
 
 typedef struct AppData AppData;
 struct AppData
@@ -59,8 +67,8 @@ void setMessage(char *, char *);
 char *updateField(char *, HWND, int, int);
 void createProfile(HWND hwnd, AppData *);
 void saveProfile(HWND, AppData *, char *);
-void loadProfile(AppData *);
-int checkProfileName(List *, char *);
+int loadProfile(AppData *);
+int checkProfileName(List *, char *, int);
 void destroy(AppData *);
 
 #endif

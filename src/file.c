@@ -29,8 +29,6 @@ void initFolders(char *path)
     CreateDirectory(dirLocation, NULL);
     sprintf(dirLocation, "%s\\%s", path, CONFIG_DIR);
     CreateDirectory(dirLocation, NULL);
-    sprintf(dirLocation, "%s\\%s", path, DATA_DIR);
-    CreateDirectory(dirLocation, NULL);
 }
 
 void initConfigFile(char *path, List *settings)
@@ -78,10 +76,6 @@ void initProfilesFile(char *path, AppData *appData)
             fclose(profiles);
         }
     }
-}
-
-void initUserFile()
-{
 }
 
 int fileExists(char *basePath, char *filePath)
