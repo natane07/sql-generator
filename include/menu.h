@@ -35,7 +35,11 @@ void setMessage(char *, char *);
 char *updateField(char *, HWND, int, int);
 void createProfile(HWND hwnd, AppData *);
 void saveProfile(HWND, AppData *, char *);
+void appendNameToFile(char *);
+void updateSettingFile(List *);
+void updateHint(HWND, char *);
 int loadProfile(AppData *);
+void setDefaultProfile(List *, char *);
 int checkProfileName(List *, char *, int);
 
 #endif

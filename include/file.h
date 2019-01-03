@@ -26,6 +26,7 @@
 #define LOCALSTORAGE "APPDATA"
 #define MAIN_DIR "sql-generator"
 #define CONFIG_DIR "sql-generator\\config"
+#define DATA_DIR "sql-generator\\data"
 #define CONFIG_FILE "sql-generator\\config\\config.ini"
 #define PROFILES_FILE "sql-generator\\config\\profiles.ini"
 
@@ -40,5 +41,6 @@ void applySetting(char *, void *);
 void setDefaultData(AppData *);
 void getFileContent(List *, int, int, FILE *);
 void printConfigFile(FILE *);
+void initUserFile(char *);
 
 #endif

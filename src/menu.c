@@ -49,7 +49,6 @@ void setExistingProfiles(HWND hwnd, AppData *appData)
 {
     Element *current = appData->existingProfiles->first;
     int index;
-    char buffer[MAX_SENT_LENGTH];
     while (current != NULL)
     {
         addStringToCombo(hwnd, PROFILESEL_ID, current->content);
@@ -60,8 +59,7 @@ void setExistingProfiles(HWND hwnd, AppData *appData)
         index = 0;
     setComboCursor(hwnd, PROFILESEL_ID, index);
     appData->pName = updateField(appData->pName, hwnd, PROFILESEL_ID, index);
-    setMessage(buffer, appData->pName);
-    sendWinText(hwnd, PROFILEHINT_ID, buffer);
+    updateHint(hwnd, appData->pName);
 }
 
 void setMessage(char *message, char *pName)
@@ -92,33 +90,42 @@ void createProfile(HWND hwnd, AppData *appData)
 void saveProfile(HWND hwnd, AppData *appData, char *pName)
 {
     int index;
-    char buffer[MAX_SENT_LENGTH];
+    char sent[MAX_SENT_LENGTH];
     appData->pName = resetString(appData->pName, pName);
     push(appData->existingProfiles, pName);
     index = addStringToCombo(hwnd, PROFILESEL_ID, pName);
     setComboCursor(hwnd, PROFILESEL_ID, index);
-    setMessage(buffer, appData->pName);
-    sendWinText(hwnd, PROFILEHINT_ID, buffer);
+    updateHint(hwnd, pName);
+    appendNameToFile(pName);
+    setDefaultProfile(appData->settings, appData->pName);
+    sprintf(sent, "%s %s", pName, OK_PROFILE_CR);
+    printInfo(sent);
+}
+
+void appendNameToFile(char *pName)
+{
     FILE *fp = openFile(getenv(LOCALSTORAGE), PROFILES_FILE, "a");
     if (fp != NULL)
     {
         fprintf(fp, "%s\n", pName);
         fclose(fp);
     }
-    index = findIndex(appData->settings, compareKey, SETT_DEF_PRO);
-    if (index != -1)
+}
+
+void updateSettingFile(List *settings)
+{
+    FILE *fp = openFile(getenv(LOCALSTORAGE), CONFIG_FILE, "w");
+    if (fp != NULL)
     {
-        char buffer[MAX_SETTING_LENGTH];
-        printIniToString(buffer, SETT_DEF_PRO, pName);
-        setElement(appData->settings, index, buffer);
-        fp = openFile(getenv(LOCALSTORAGE), CONFIG_FILE, "w");
-        if (fp != NULL)
-        {
-            writeListToFile(appData->settings, fp);
-        }
+        writeListToFile(settings, fp);
     }
-    sprintf(buffer, "%s %s", pName, OK_PROFILE_CR);
-    printInfo(buffer);
+}
+
+void updateHint(HWND hwnd, char *pName)
+{
+    char buffer[MAX_SENT_LENGTH];
+    setMessage(buffer, pName);
+    sendWinText(hwnd, PROFILEHINT_ID, buffer);
 }
 
 int loadProfile(AppData *appData)
@@ -128,10 +135,24 @@ int loadProfile(AppData *appData)
     int ok = checkProfileName(appData->existingProfiles, appData->pName, LOAD);
     if (ok)
     {
+        setDefaultProfile(appData->settings, appData->pName);
+        initUserFile(appData->pName);
         printInfo(buffer);
         return 1;
     }
     return 0;
+}
+
+void setDefaultProfile(List *settings, char *pName)
+{
+    int index = findIndex(settings, compareKey, SETT_DEF_PRO);
+    if (index != -1)
+    {
+        char setting[MAX_SETTING_LENGTH];
+        printIniToString(setting, SETT_DEF_PRO, pName);
+        setElement(settings, index, setting);
+        updateSettingFile(settings);
+    }
 }
 
 int checkProfileName(List *profiles, char *profile, int mode)

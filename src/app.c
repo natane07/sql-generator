@@ -57,11 +57,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             case CBN_SELCHANGE:
             {
                 int index;
-                char buffer[MAX_SENT_LENGTH];
                 index = getComboCursor(hwnd, PROFILESEL_ID);
                 appData.pName = updateField(appData.pName, hwnd, PROFILESEL_ID, index);
-                setMessage(buffer, appData.pName);
-                sendWinText(hwnd, PROFILEHINT_ID, buffer);
+                updateHint(hwnd, appData.pName);
                 break;
             }
             default:

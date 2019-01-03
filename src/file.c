@@ -29,6 +29,8 @@ void initFolders(char *path)
     CreateDirectory(dirLocation, NULL);
     sprintf(dirLocation, "%s\\%s", path, CONFIG_DIR);
     CreateDirectory(dirLocation, NULL);
+    sprintf(dirLocation, "%s\\%s", path, DATA_DIR);
+    CreateDirectory(dirLocation, NULL);
 }
 
 void initConfigFile(char *path, List *settings)
@@ -150,4 +152,13 @@ void printConfigFile(FILE *fp)
     printIniToFile(fp, SETT_VER, DEFAULT_VERSION);
     printIniToFile(fp, SETT_DEF_PRO, DEFAULT_PROFILE);
     fclose(fp);
+}
+
+void initUserFile(char *name)
+{
+    char location[MAX_PATH_LENGTH];
+    sprintf(location, "%s\\%s", DATA_DIR, name);
+    FILE *fp = openFile(getenv(LOCALSTORAGE), location, "w");
+    if (fp != NULL)
+        fclose(fp);
 }
