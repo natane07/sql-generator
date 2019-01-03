@@ -105,3 +105,38 @@ void getStringFromWin(HWND hwnd, int controlId, char *destination, int maxLength
 {
     SendDlgItemMessage(hwnd, controlId, WM_GETTEXT, (WPARAM)maxLength, (LPARAM)destination);
 }
+
+void createClass(WNDCLASSEX *wc, HINSTANCE hInstance, const char *className, LRESULT(CALLBACK *wndProc)(HWND, UINT, WPARAM, LPARAM))
+{
+    wc->cbSize = sizeof(WNDCLASSEX);
+    wc->style = 0;
+    wc->lpfnWndProc = wndProc;
+    wc->cbClsExtra = 0;
+    wc->cbWndExtra = 0;
+    wc->hInstance = hInstance;
+    wc->hIcon = NULL;
+    wc->hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc->hbrBackground = (HBRUSH)(COLOR_WINDOW);
+    wc->lpszMenuName = NULL;
+    wc->lpszClassName = className;
+    wc->hIconSm = NULL;
+}
+
+WinPosition getChildWindowPosition(HWND hwnd)
+{
+    RECT winCoo;
+    WinPosition winPos;
+    GetWindowRect(hwnd, &winCoo);
+    MapWindowPoints(HWND_DESKTOP, GetParent(hwnd), (LPPOINT)&winCoo, 2);
+    winPos.x = winCoo.left;
+    winPos.y = winCoo.top;
+    winPos.width = winCoo.right - winCoo.left;
+    winPos.height = winCoo.bottom - winCoo.top;
+    return winPos;
+}
+
+void moveWindowBy(HWND hwnd, int x, int y)
+{
+    WinPosition winPos = getChildWindowPosition(hwnd);
+    MoveWindow(hwnd, winPos.x + x, winPos.y + y, winPos.width, winPos.height, TRUE);
+}

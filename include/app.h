@@ -3,6 +3,7 @@
 #define APP_H
 
 #include "list.h"
+#include "sql.h"
 #include <windows.h>
 
 //app
@@ -22,6 +23,13 @@
 #define OK_PROFILE_CR "created successfully!"
 #define OK_PROFILE_LD "loaded successfully!"
 
+//styles
+#define STL_BUTTON WS_VISIBLE | WS_CHILD | BS_MULTILINE
+#define STL_LIST WS_VISIBLE | WS_CHILD | WS_VSCROLL | CBS_DROPDOWNLIST
+#define STL_TEXT WS_VISIBLE | WS_CHILD
+#define STL_TEXT_RIGHT WS_VISIBLE | WS_CHILD | SS_RIGHT
+#define STL_EDIT WS_VISIBLE | WS_CHILD | WS_BORDER
+
 //check profile name function modes
 #define CREATE 0
 #define LOAD 1
@@ -33,12 +41,12 @@ struct AppData
     char *pName;
     List *existingProfiles;
     List *settings;
+    SqlModel *model;
 };
 
 void initAppdata(AppData *);
 void setAppData(AppData *);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-void createClass(WNDCLASSEX *, HINSTANCE, const char *);
 void loadIcon(HWND, const char *);
 void destroy(AppData *);
 

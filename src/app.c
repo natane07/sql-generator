@@ -3,6 +3,7 @@
 #include "..\include\utils.h"
 #include "..\include\parser.h"
 #include "..\include\menu.h"
+#include "..\include\crtable.h"
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -21,11 +22,13 @@ void setAppData(AppData *appData)
     appData->pName = NULL;
     appData->existingProfiles = NULL;
     appData->settings = NULL;
+    appData->model = NULL;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     static HWND mainMenuControls[MAIN_WIN_CTRL_NUM];
+    static HWND crTableMenuControls[32];
     static AppData appData;
     switch (msg)
     {
@@ -49,8 +52,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             int ok = loadProfile(&appData);
             if (ok)
                 destroyMainMenu(mainMenuControls);
+            createCrTableMenu(hwnd, crTableMenuControls);
             break;
         }
+        case INSDATA_ID:
+            break;
         case PROFILESEL_ID:
             switch (HIWORD(wParam))
             {
@@ -83,22 +89,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hwnd, msg, wParam, lParam);
     }
     return 0;
-}
-
-void createClass(WNDCLASSEX *wc, HINSTANCE hInstance, const char *className)
-{
-    wc->cbSize = sizeof(WNDCLASSEX);
-    wc->style = 0;
-    wc->lpfnWndProc = WndProc;
-    wc->cbClsExtra = 0;
-    wc->cbWndExtra = 0;
-    wc->hInstance = hInstance;
-    wc->hIcon = NULL;
-    wc->hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc->hbrBackground = (HBRUSH)(COLOR_WINDOW);
-    wc->lpszMenuName = NULL;
-    wc->lpszClassName = className;
-    wc->hIconSm = NULL;
 }
 
 void loadIcon(HWND hwnd, const char *icon)

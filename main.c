@@ -8,9 +8,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     WNDCLASSEX wc;
     HWND hwnd;
     MSG Msg;
-    const char className[] = MAINWIN_CLASS;
 
-    createClass(&wc, hInstance, className);
+    createClass(&wc, hInstance, MAINWIN_CLASS, WndProc);
     if (!RegisterClassEx(&wc))
     {
         printError(ERR_WIN_REG);
@@ -19,7 +18,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     hwnd = CreateWindowEx(
         WS_EX_CLIENTEDGE,
-        className,
+        MAINWIN_CLASS,
         APP_NAME,
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
