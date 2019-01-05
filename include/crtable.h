@@ -17,7 +17,15 @@
 #define TITLEHINT_MSG "Enter Table Name:"
 #define TITLEDIT_ID 12
 #define TITLEDIT_MSG ""
+#define TABLIST_ID 13
+#define TABLIST_MSG ""
+#define ADDCOLUMN_MSG "+ Column"
+#define ADDCOLUMN_ID 14
+#define ADDTABLE_MSG "Add Table"
+#define ADDTABLE_ID 15
+#define COLUMNEDIT_MSG ""
 
 void createCrTableMenu(HWND, HWND *);
+void addColumn(HWND, HWND *);
 
 #endif

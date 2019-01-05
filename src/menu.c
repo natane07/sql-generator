@@ -7,7 +7,7 @@
 
 void createMainMenu(HWND hwnd, HWND *mainMenuControls)
 {
-    mainMenuControls[0] = CreateWindow("COMBOBOX", PROFILESEL_MSG, STL_LIST, 30, 85, 300, 100, hwnd, (HMENU)PROFILESEL_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+    mainMenuControls[0] = CreateWindow("COMBOBOX", PROFILESEL_MSG, STL_COMBO, 30, 85, 300, 100, hwnd, (HMENU)PROFILESEL_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     mainMenuControls[1] = CreateWindow("STATIC", PROFILEHINT_MSG, STL_TEXT, 30, 10, 400, 24, hwnd, (HMENU)PROFILEHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     mainMenuControls[2] = CreateWindow("BUTTON", CRTABLE_MSG, STL_BUTTON, 245, 160, 150, 24, hwnd, (HMENU)CRTABLE_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     mainMenuControls[3] = CreateWindow("BUTTON", INSDATA_MSG, STL_BUTTON, 405, 160, 150, 24, hwnd, (HMENU)INSDATA_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
