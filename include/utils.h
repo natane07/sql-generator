@@ -23,6 +23,7 @@ int compareKey(char *, char *);
 void printError(const char *);
 void printInfo(const char *);
 int addStringToCombo(HWND, int, char *);
+int addStringToList(HWND, int, char *);
 int findStringIndexInCombo(HWND, int, char *);
 void setComboCursor(HWND, int, int);
 int getComboCursor(HWND, int);

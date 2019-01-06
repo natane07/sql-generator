@@ -76,6 +76,11 @@ int addStringToCombo(HWND hwnd, int controlId, char *content)
     return SendDlgItemMessage(hwnd, controlId, CB_ADDSTRING, (WPARAM)0, (LPARAM)content);
 }
 
+int addStringToList(HWND hwnd, int controlId, char *content)
+{
+    return SendDlgItemMessage(hwnd, controlId, LB_ADDSTRING, (WPARAM)0, (LPARAM)content);
+}
+
 int findStringIndexInCombo(HWND hwnd, int controlId, char *content)
 {
     return SendDlgItemMessage(hwnd, controlId, CB_FINDSTRING, (WPARAM)1, (LPARAM)content);
