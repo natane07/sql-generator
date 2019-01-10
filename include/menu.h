@@ -4,8 +4,10 @@
 
 //controls
 #define MAIN_WIN_CTRL_NUM 8
-#define EXIT_ID 0
+#define EXIT_ID 1000
 #define EXIT_MSG "Exit"
+#define GTMENU_ID 1001
+#define GTMENU_MSG "Go to Menu"
 #define CRTABLE_ID 1
 #define CRTABLE_MSG "Create SQL Model"
 #define INSDATA_ID 2
@@ -28,7 +30,6 @@
 
 void createMainMenu(HWND, HWND *);
 void destroyMainMenu(HWND *);
-void createWindowBar(HWND);
 void setVersion(HWND, AppData *);
 void setExistingProfiles(HWND, AppData *);
 void setMessage(char *, char *);

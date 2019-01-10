@@ -42,13 +42,14 @@ struct AppData
     char *pName;
     List *existingProfiles;
     List *settings;
-    SqlModel *model;
+    SqlModel model;
 };
 
 void initAppdata(AppData *);
 void setAppData(AppData *);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void loadIcon(HWND, const char *);
+void createWindowBar(HWND, HMENU *);
 void destroy(AppData *);
 
 #endif

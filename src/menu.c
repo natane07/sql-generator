@@ -19,19 +19,7 @@ void createMainMenu(HWND hwnd, HWND *mainMenuControls)
 
 void destroyMainMenu(HWND *mainMenuControls)
 {
-    int i;
-    for (i = 0; i < MAIN_WIN_CTRL_NUM; i++)
-        DestroyWindow(mainMenuControls[i]);
-}
-
-void createWindowBar(HWND hwnd)
-{
-    HMENU hMenu, hSubMenu;
-    hMenu = CreateMenu();
-    hSubMenu = CreatePopupMenu();
-    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu, "Menu");
-    AppendMenu(hSubMenu, MF_STRING, EXIT_ID, EXIT_MSG);
-    SetMenu(hwnd, hMenu);
+    destroyMenu(mainMenuControls, MAIN_WIN_CTRL_NUM);
 }
 
 void setVersion(HWND hwnd, AppData *appData)

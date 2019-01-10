@@ -7,6 +7,7 @@
 //view
 #define CRTABLEWIN_CLASS "CrTableClass"
 #define CRTABLE_NAME "Create Table"
+#define CRTABLE_WIN_CTRL_NUM 42
 
 //controls
 #define LITABHINT_ID 9
@@ -28,10 +29,21 @@
 #define DELTABLE_MSG "Remove Table"
 #define DELTABLE_ID 17
 #define COLUMNEDIT_MSG ""
+#define EXPORTMODEL_ID 18
+#define EXPORTMODEL_MSG "Export Model"
+
+//available range for additional controls
+#define MAX_ADDITIONAL_CTRL_NUM 30
+#define COL_FIRST_ASSIGNABLE_ID 19
+#define COL_FIRST_ASSIGNABLE_INDEX 10
+#define COL_LAST_ASSIGNABLE_INDEX COL_FIRST_ASSIGNABLE_INDEX + MAX_ADDITIONAL_CTRL_NUM - 1
+#define FK_FIRST_ASSIGNABLE_INDEX COL_LAST_ASSIGNABLE_INDEX + 1
+#define FK_LAST_ASSIGNABLE_INDEX FK_FIRST_ASSIGNABLE_INDEX + 1
 
 void createCrTableMenu(HWND, HWND *);
 void addColumn(HWND, HWND *);
 void getTableName(HWND, char *);
 void addTableToList(HWND, char *);
+void destroyCrTableMenu(HWND *);
 
 #endif

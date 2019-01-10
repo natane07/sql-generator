@@ -22,19 +22,19 @@ void setAppData(AppData *appData)
     appData->pName = NULL;
     appData->existingProfiles = NULL;
     appData->settings = NULL;
-    appData->model = NULL;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     static HWND mainMenuControls[MAIN_WIN_CTRL_NUM];
-    static HWND crTableMenuControls[32];
+    static HWND crTableMenuControls[CRTABLE_WIN_CTRL_NUM];
+    static HMENU hMenu;
     static AppData appData;
     switch (msg)
     {
     case WM_CREATE:
         loadIcon(hwnd, APP_ICON);
-        createWindowBar(hwnd);
+        createWindowBar(hwnd, &hMenu);
         createMainMenu(hwnd, mainMenuControls);
         initAppdata(&appData);
         setExistingProfiles(hwnd, &appData);
@@ -47,29 +47,31 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             destroy(&appData);
             PostMessage(hwnd, WM_CLOSE, 0, 0);
             break;
+        case GTMENU_ID:
+            EnableMenuItem(hMenu, GTMENU_ID, MF_GRAYED);
+            destroyCrTableMenu(crTableMenuControls);
+            createMainMenu(hwnd, mainMenuControls);
+            setExistingProfiles(hwnd, &appData);
+            setVersion(hwnd, &appData);
+            break;
         case CRTABLE_ID:
         {
             int ok = loadProfile(&appData);
             if (ok)
                 destroyMainMenu(mainMenuControls);
             createCrTableMenu(hwnd, crTableMenuControls);
+            EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
             break;
         }
         case INSDATA_ID:
             break;
         case PROFILESEL_ID:
-            switch (HIWORD(wParam))
-            {
-            case CBN_SELCHANGE:
+            if (HIWORD(wParam) == CBN_SELCHANGE)
             {
                 int index;
                 index = getComboCursor(hwnd, PROFILESEL_ID);
                 appData.pName = updateField(appData.pName, hwnd, PROFILESEL_ID, index);
                 updateHint(hwnd, appData.pName);
-                break;
-            }
-            default:
-                break;
             }
             break;
         case PROFILECRSUB_ID:
@@ -104,6 +106,18 @@ void loadIcon(HWND hwnd, const char *icon)
     {
         SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIconSm);
     }
+}
+
+void createWindowBar(HWND hwnd, HMENU *hMenu)
+{
+    HMENU hSubMenu;
+    *hMenu = CreateMenu();
+    hSubMenu = CreatePopupMenu();
+    AppendMenu(*hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu, "Menu");
+    AppendMenu(hSubMenu, MF_STRING, GTMENU_ID, GTMENU_MSG);
+    EnableMenuItem(*hMenu, GTMENU_ID, MF_GRAYED);
+    AppendMenu(hSubMenu, MF_STRING, EXIT_ID, EXIT_MSG);
+    SetMenu(hwnd, *hMenu);
 }
 
 void destroy(AppData *appData)

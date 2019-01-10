@@ -145,3 +145,10 @@ void moveWindowBy(HWND hwnd, int x, int y)
     WinPosition winPos = getChildWindowPosition(hwnd);
     MoveWindow(hwnd, winPos.x + x, winPos.y + y, winPos.width, winPos.height, TRUE);
 }
+
+void destroyMenu(HWND *controls, int size)
+{
+    int i;
+    for (i = 0; i < size; i++)
+        DestroyWindow(controls[i]);
+}

@@ -31,7 +31,8 @@ void sendWinText(HWND, int, char *);
 void getStringFromCombo(HWND, int, int, char *);
 void getStringFromWin(HWND, int, char *, int);
 void createClass(WNDCLASSEX *, HINSTANCE, const char *, LRESULT(CALLBACK *)(HWND, UINT, WPARAM, LPARAM));
-WinPosition getChildWindowPosition(HWND hwnd);
-void moveWindowBy(HWND hwnd, int x, int y);
+WinPosition getChildWindowPosition(HWND);
+void moveWindowBy(HWND, int, int);
+void destroyMenu(HWND *, int);
 
 #endif
