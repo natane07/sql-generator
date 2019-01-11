@@ -10,6 +10,8 @@
 #define APP_NAME "SQL-Generator"
 #define APP_ICON ".\\..\\ico\\sql.ico"
 #define MAINWIN_CLASS "WinClass"
+#define DEF_SCREEN_WIDTH 1920
+#define DEF_SCREEN_HEIGHT 1080
 
 //errors
 #define ERR_WIN_REG "Window Registration Failed!"

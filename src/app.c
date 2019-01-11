@@ -40,9 +40,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         setExistingProfiles(hwnd, &appData);
         setVersion(hwnd, &appData);
         break;
-    case WM_VSCROLL:
-        printf("toto");
-        break;
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
