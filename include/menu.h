@@ -3,7 +3,7 @@
 #define MENU_H
 
 //controls
-#define MAIN_WIN_CTRL_NUM 8
+#define MAIN_WIN_CTRL_NUM 9
 #define EXIT_ID 1000
 #define EXIT_MSG "Exit"
 #define GTMENU_ID 1001
@@ -24,6 +24,8 @@
 #define PROFILECRSUB_MSG "Create new profile"
 #define MENUHINT_ID 8
 #define MENUHINT_MSG "Not the owner of the currently selected profile? Select another or create a new one!"
+#define GTHINT_ID 9
+#define GTHINT_MSG "What do you want to do today?"
 
 #include <windows.h>
 #include "./app.h"

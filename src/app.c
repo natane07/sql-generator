@@ -40,6 +40,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         setExistingProfiles(hwnd, &appData);
         setVersion(hwnd, &appData);
         break;
+    case WM_VSCROLL:
+        printf("toto");
+        break;
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
@@ -58,9 +61,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
             int ok = loadProfile(&appData);
             if (ok)
+            {
                 destroyMainMenu(mainMenuControls);
-            createCrTableMenu(hwnd, crTableMenuControls);
-            EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
+                createCrTableMenu(hwnd, crTableMenuControls);
+                EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
+            }
             break;
         }
         case INSDATA_ID:
@@ -76,6 +81,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             break;
         case PROFILECRSUB_ID:
             createProfile(hwnd, &appData);
+            break;
+        case ADDCOLUMN_ID:
+            addColumn(hwnd, crTableMenuControls, COL_ADD);
+            break;
+        case ADDFK_ID:
+            addColumn(hwnd, crTableMenuControls, FK_ADD);
             break;
         default:
             break;

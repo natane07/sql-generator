@@ -9,12 +9,13 @@ void createMainMenu(HWND hwnd, HWND *mainMenuControls)
 {
     mainMenuControls[0] = CreateWindow("COMBOBOX", PROFILESEL_MSG, STL_COMBO, 30, 85, 300, 100, hwnd, (HMENU)PROFILESEL_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     mainMenuControls[1] = CreateWindow("STATIC", PROFILEHINT_MSG, STL_TEXT, 30, 10, 400, 24, hwnd, (HMENU)PROFILEHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
-    mainMenuControls[2] = CreateWindow("BUTTON", CRTABLE_MSG, STL_BUTTON, 245, 160, 150, 24, hwnd, (HMENU)CRTABLE_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
-    mainMenuControls[3] = CreateWindow("BUTTON", INSDATA_MSG, STL_BUTTON, 405, 160, 150, 24, hwnd, (HMENU)INSDATA_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
-    mainMenuControls[4] = CreateWindow("STATIC", VERSIONHINT_MSG, STL_TEXT_RIGHT, 630, 10, 300, 24, hwnd, (HMENU)VERSIONHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+    mainMenuControls[2] = CreateWindow("BUTTON", CRTABLE_MSG, STL_BUTTON, 385, 350, 150, 24, hwnd, (HMENU)CRTABLE_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+    mainMenuControls[3] = CreateWindow("BUTTON", INSDATA_MSG, STL_BUTTON, 545, 350, 150, 24, hwnd, (HMENU)INSDATA_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+    mainMenuControls[4] = CreateWindow("STATIC", VERSIONHINT_MSG, STL_TEXT_RIGHT, 780, 10, 300, 24, hwnd, (HMENU)VERSIONHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     mainMenuControls[5] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", PROFILECR_MSG, STL_EDIT, 470, 85, 300, 24, hwnd, (HMENU)PROFILECR_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     mainMenuControls[6] = CreateWindow("BUTTON", PROFILECRSUB_MSG, STL_BUTTON, 780, 85, 150, 24, hwnd, (HMENU)PROFILECRSUB_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     mainMenuControls[7] = CreateWindow("STATIC", MENUHINT_MSG, STL_TEXT, 30, 52, 600, 24, hwnd, (HMENU)MENUHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+    mainMenuControls[8] = CreateWindow("STATIC", GTHINT_MSG, STL_TEXT_CENTER, 390, 300, 300, 24, hwnd, (HMENU)GTHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
 }
 
 void destroyMainMenu(HWND *mainMenuControls)
