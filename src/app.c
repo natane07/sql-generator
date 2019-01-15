@@ -4,6 +4,7 @@
 #include "..\include\parser.h"
 #include "..\include\menu.h"
 #include "..\include\crtable.h"
+#include "..\include\sql.h"
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -60,7 +61,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             if (ok)
             {
                 destroyMainMenu(mainMenuControls);
-                createCrTableMenu(hwnd, crTableMenuControls);
+                createCrTableMenu(hwnd, crTableMenuControls, &appData.rules);
                 EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
             }
             break;
@@ -80,10 +81,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             createProfile(hwnd, &appData);
             break;
         case ADDCOLUMN_ID:
-            addColumn(hwnd, crTableMenuControls, COL_ADD);
+            addColumn(hwnd, crTableMenuControls, COL_ADD, &appData.rules);
             break;
         case ADDFK_ID:
-            addColumn(hwnd, crTableMenuControls, FK_ADD);
+            addColumn(hwnd, crTableMenuControls, FK_ADD, &appData.rules);
             break;
         default:
             break;

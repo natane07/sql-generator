@@ -1,5 +1,5 @@
-#include "include\app.h"
-#include "include\utils.h"
+#include ".\include\app.h"
+#include ".\include\utils.h"
 #include <windows.h>
 #include <string.h>
 

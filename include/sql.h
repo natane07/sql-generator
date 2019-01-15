@@ -53,6 +53,13 @@ struct SqlModel
 };
 typedef struct SqlModel SqlModel;
 
+typedef struct SqlRules SqlRules;
+struct SqlRules
+{
+    int maxCol;
+    int maxFk;
+};
+
 void getTestModel(SqlModel *);
 void setDefaultPrimaryKey(SqlColumn *);
 void setColumnName(SqlColumn *, char *);

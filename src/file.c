@@ -2,6 +2,7 @@
 #include "..\include\list.h"
 #include "..\include\app.h"
 #include "..\include\utils.h"
+#include "..\include\crtable.h"
 #include "..\include\parser.h"
 #include <windows.h>
 #include <stdio.h>
@@ -120,6 +121,14 @@ void applySetting(char *content, void *data)
         {
             appData->pName = resetString(appData->pName, value);
         }
+        else if (strcmp(key, SETT_MAX_COL) == 0)
+        {
+            appData->rules.maxCol = atoi(value);
+        }
+        else if (strcmp(key, SETT_MAX_FK) == 0)
+        {
+            appData->rules.maxFk = atoi(value);
+        }
     }
 }
 
@@ -129,6 +138,8 @@ void setDefaultData(AppData *appData)
     char profile[] = DEFAULT_PROFILE;
     appData->version = setString(appData->version, version);
     appData->pName = setString(appData->pName, profile);
+    appData->rules.maxCol = atoi(DEFAULT_MAXCOL);
+    appData->rules.maxFk = atoi(DEFAULT_MAXFK);
     push(appData->existingProfiles, DEFAULT_PROFILE);
 }
 
@@ -151,6 +162,8 @@ void printConfigFile(FILE *fp)
 {
     printIniToFile(fp, SETT_VER, DEFAULT_VERSION);
     printIniToFile(fp, SETT_DEF_PRO, DEFAULT_PROFILE);
+    printIniToFile(fp, SETT_MAX_COL, DEFAULT_MAXCOL);
+    printIniToFile(fp, SETT_MAX_FK, DEFAULT_MAXFK);
     fclose(fp);
 }
 

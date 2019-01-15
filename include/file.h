@@ -17,10 +17,14 @@
 //SETTINGS
 #define SETT_DEF_PRO "defaultProfile"
 #define SETT_VER "version"
+#define SETT_MAX_COL "maxColumnNum"
+#define SETT_MAX_FK "maxFkNum"
 
 //DEFAULT VALUES
 #define DEFAULT_PROFILE "default"
 #define DEFAULT_VERSION "0.2"
+#define DEFAULT_MAXCOL "15"
+#define DEFAULT_MAXFK "4"
 
 //PATHS
 #define LOCALSTORAGE "APPDATA"

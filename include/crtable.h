@@ -3,6 +3,8 @@
 #define CRTABLE_H
 
 #include <windows.h>
+#include "sql.h"
+
 
 //view
 #define CRTABLEWIN_CLASS "CrTableClass"
@@ -49,8 +51,8 @@
 #define COL_ADD 1
 #define SET_MENU 2
 
-void createCrTableMenu(HWND, HWND *);
-void addColumn(HWND, HWND *, int);
+void createCrTableMenu(HWND, HWND *, SqlRules *);
+void addColumn(HWND, HWND *, int, SqlRules *);
 void getTableName(HWND, char *);
 void addTableToList(HWND, char *);
 void destroyCrTableMenu(HWND *);

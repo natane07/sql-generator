@@ -4,6 +4,7 @@
 
 #include "list.h"
 #include "sql.h"
+#include "crtable.h"
 #include <windows.h>
 
 //app
@@ -46,6 +47,7 @@ struct AppData
     List *existingProfiles;
     List *settings;
     SqlModel model;
+    SqlRules rules;
 };
 
 void initAppdata(AppData *);
