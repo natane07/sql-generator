@@ -30,6 +30,7 @@ int getComboCursor(HWND, int);
 void sendWinText(HWND, int, char *);
 void getStringFromCombo(HWND, int, int, char *);
 void getStringFromWin(HWND, int, char *, int);
+void changeRadioState(HWND hwnd);
 void createClass(WNDCLASSEX *, HINSTANCE, const char *, LRESULT(CALLBACK *)(HWND, UINT, WPARAM, LPARAM));
 WinPosition getChildWindowPosition(HWND);
 void moveWindowBy(HWND, int, int);

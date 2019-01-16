@@ -4,6 +4,7 @@
 #include "..\include\utils.h"
 #include "..\include\crtable.h"
 #include "..\include\parser.h"
+#include "..\include\sql.h"
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,11 +16,14 @@ void initFs(AppData *appData)
     char path[MAX_PATH_LENGTH];
     appData->settings = listInit();
     appData->existingProfiles = listInit();
+    appData->rules.types = listInit();
+    appData->rules.numReqTypes = listInit();
     sprintf(path, "%s", getenv(LOCALSTORAGE));
     setDefaultData(appData);
     initFolders(path);
     initConfigFile(path, appData->settings);
     initProfilesFile(path, appData);
+    initTypesFile(path, appData);
     applySettings(appData->settings, appData);
 }
 
@@ -78,6 +82,56 @@ void initProfilesFile(char *path, AppData *appData)
             fprintf(profiles, "%s\n", DEFAULT_PROFILE);
             fclose(profiles);
         }
+    }
+}
+
+void initTypesFile(char *path, AppData *appData)
+{
+    FILE *fp = NULL;
+    char *file = TYPES_FILE;
+    List *temp = listInit();
+    if (fileExists(path, file) == 1)
+    {
+        fp = openFile(path, file, "r");
+        if (fp != NULL)
+        {
+            getFileContent(temp, MAX_TYPE_LENGTH, MIN_TYPE_LENGTH, fp);
+            forEach(temp, getTypes, appData->rules.types);
+            forEach(temp, getNumReqTypes, appData->rules.numReqTypes);
+        }
+    }
+    else
+    {
+        fp = openFile(path, file, "w");
+        if (fp != NULL)
+        {
+            printTypesFile(fp);
+        }
+    }
+    destroyList(temp);
+}
+
+void getTypes(char *content, void *data)
+{
+    List *types = data;
+    char key[MAX_TYPE_LENGTH];
+    char value[MAX_TYPE_LENGTH];
+    int ok = parseIni(content, key, value);
+    if (ok)
+    {
+        push(types, key);
+    }
+}
+
+void getNumReqTypes(char *content, void *data)
+{
+    List *types = data;
+    char key[MAX_TYPE_LENGTH];
+    char value[MAX_TYPE_LENGTH];
+    int ok = parseIni(content, key, value);
+    if (ok && strcmp(value, REQ_NUM) == 0)
+    {
+        push(types, key);
     }
 }
 
@@ -141,6 +195,7 @@ void setDefaultData(AppData *appData)
     appData->rules.maxCol = atoi(DEFAULT_MAXCOL);
     appData->rules.maxFk = atoi(DEFAULT_MAXFK);
     push(appData->existingProfiles, DEFAULT_PROFILE);
+    setDefaultTypes(appData->rules.types);
 }
 
 void getFileContent(List *storage, int bufferSize, int minLength, FILE *fp)
@@ -156,6 +211,34 @@ void getFileContent(List *storage, int bufferSize, int minLength, FILE *fp)
     }
     fclose(fp);
     free(buffer);
+}
+
+void printTypesFile(FILE *fp)
+{
+    printIniToFile(fp, SQL_TYPE_1, SQL_TYPE_1_REQ_NUM);
+    printIniToFile(fp, SQL_TYPE_2, SQL_TYPE_2_REQ_NUM);
+    printIniToFile(fp, SQL_TYPE_3, SQL_TYPE_3_REQ_NUM);
+    printIniToFile(fp, SQL_TYPE_4, SQL_TYPE_4_REQ_NUM);
+    printIniToFile(fp, SQL_TYPE_5, SQL_TYPE_5_REQ_NUM);
+    printIniToFile(fp, SQL_TYPE_6, SQL_TYPE_6_REQ_NUM);
+    fclose(fp);
+}
+
+void setDefaultTypes(List *types)
+{
+    char buffer[MAX_TYPE_LENGTH];
+    sprintf(buffer, "%s=%s", SQL_TYPE_1, SQL_TYPE_1_REQ_NUM);
+    push(types, buffer);
+    sprintf(buffer, "%s=%s", SQL_TYPE_2, SQL_TYPE_2_REQ_NUM);
+    push(types, buffer);
+    sprintf(buffer, "%s=%s", SQL_TYPE_3, SQL_TYPE_3_REQ_NUM);
+    push(types, buffer);
+    sprintf(buffer, "%s=%s", SQL_TYPE_4, SQL_TYPE_4_REQ_NUM);
+    push(types, buffer);
+    sprintf(buffer, "%s=%s", SQL_TYPE_5, SQL_TYPE_5_REQ_NUM);
+    push(types, buffer);
+    sprintf(buffer, "%s=%s", SQL_TYPE_6, SQL_TYPE_6_REQ_NUM);
+    push(types, buffer);
 }
 
 void printConfigFile(FILE *fp)

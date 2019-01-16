@@ -111,6 +111,19 @@ void getStringFromWin(HWND hwnd, int controlId, char *destination, int maxLength
     SendDlgItemMessage(hwnd, controlId, WM_GETTEXT, (WPARAM)maxLength, (LPARAM)destination);
 }
 
+void changeRadioState(HWND hwnd)
+{
+    int checked = SendMessage(hwnd, BM_GETCHECK, (WPARAM)0, (LPARAM)0);
+    if (checked)
+    {
+        SendMessage(hwnd, BM_SETCHECK, (WPARAM)BST_UNCHECKED, (LPARAM)0);
+    }
+    else
+    {
+        SendMessage(hwnd, BM_SETCHECK, (WPARAM)BST_CHECKED, (LPARAM)0);
+    }
+}
+
 void createClass(WNDCLASSEX *wc, HINSTANCE hInstance, const char *className, LRESULT(CALLBACK *wndProc)(HWND, UINT, WPARAM, LPARAM))
 {
     wc->cbSize = sizeof(WNDCLASSEX);

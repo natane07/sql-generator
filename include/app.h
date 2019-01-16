@@ -34,6 +34,7 @@
 #define STL_TEXT_CENTER (WS_VISIBLE | WS_CHILD | SS_CENTER)
 #define STL_EDIT (WS_VISIBLE | WS_CHILD | WS_BORDER)
 #define STL_LIST (WS_VISIBLE | WS_CHILD)
+#define STL_RADIO (WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON)
 
 //check profile name function modes
 #define CREATE 0

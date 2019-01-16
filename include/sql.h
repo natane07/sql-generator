@@ -2,6 +2,25 @@
 
 #define SQL_H
 
+#include "list.h"
+
+//default sql types
+#define SQL_TYPE_1 "INT"
+#define SQL_TYPE_2 "CHAR"
+#define SQL_TYPE_3 "VARCHAR"
+#define SQL_TYPE_4 "TEXT"
+#define SQL_TYPE_5 "DATE"
+#define SQL_TYPE_6 "DECIMAL"
+#define SQL_TYPE_1_REQ_NUM NOT_REQ_NUM
+#define SQL_TYPE_2_REQ_NUM REQ_NUM
+#define SQL_TYPE_3_REQ_NUM REQ_NUM
+#define SQL_TYPE_4_REQ_NUM NOT_REQ_NUM
+#define SQL_TYPE_5_REQ_NUM NOT_REQ_NUM
+#define SQL_TYPE_6_REQ_NUM NOT_REQ_NUM
+#define REQ_NUM "1"
+#define NOT_REQ_NUM "0"
+
+
 #define SQL_CRTAB "CREATE TABLE"
 #define SQL_PK "PRIMARY KEY"
 #define SQL_FK "FOREIGN KEY"
@@ -58,6 +77,8 @@ struct SqlRules
 {
     int maxCol;
     int maxFk;
+    List *types;
+    List *numReqTypes;
 };
 
 void getTestModel(SqlModel *);

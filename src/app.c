@@ -23,12 +23,14 @@ void setAppData(AppData *appData)
     appData->pName = NULL;
     appData->existingProfiles = NULL;
     appData->settings = NULL;
+    appData->rules.types = NULL;
+    appData->rules.numReqTypes = NULL;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     static HWND mainMenuControls[MAIN_WIN_CTRL_NUM];
-    static HWND crTableMenuControls[CRTABLE_WIN_CTRL_NUM];
+    static CrTableControls crTableMenuControls;
     static HMENU hMenu;
     static AppData appData;
     switch (msg)
@@ -50,7 +52,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             break;
         case GTMENU_ID:
             EnableMenuItem(hMenu, GTMENU_ID, MF_GRAYED);
-            destroyCrTableMenu(crTableMenuControls);
+            destroyCrTableMenu(&crTableMenuControls);
             createMainMenu(hwnd, mainMenuControls);
             setExistingProfiles(hwnd, &appData);
             setVersion(hwnd, &appData);
@@ -61,7 +63,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             if (ok)
             {
                 destroyMainMenu(mainMenuControls);
-                createCrTableMenu(hwnd, crTableMenuControls, &appData.rules);
+                createCrTableMenu(hwnd, &crTableMenuControls, &appData.rules);
                 EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
             }
             break;
@@ -80,11 +82,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case PROFILECRSUB_ID:
             createProfile(hwnd, &appData);
             break;
+        case RADIO_BTN_ID:
+            changeRadioState((HWND)lParam);
+            break;
         case ADDCOLUMN_ID:
-            addColumn(hwnd, crTableMenuControls, COL_ADD, &appData.rules);
+            addColumn(hwnd, &crTableMenuControls, COL_ADD, &appData.rules);
             break;
         case ADDFK_ID:
-            addColumn(hwnd, crTableMenuControls, FK_ADD, &appData.rules);
+            addColumn(hwnd, &crTableMenuControls, FK_ADD, &appData.rules);
+            break;
+        case REMOVEFK_ID:
+            removeColumn(hwnd, &crTableMenuControls, FK_DEL, &appData.rules);
+            break;
+        case REMOVECOL_ID:
+            removeColumn(hwnd, &crTableMenuControls, COL_DEL, &appData.rules);
             break;
         default:
             break;
@@ -133,6 +144,8 @@ void destroy(AppData *appData)
 {
     destroyList(appData->existingProfiles);
     destroyList(appData->settings);
+    destroyList(appData->rules.types);
+    destroyList(appData->rules.numReqTypes);
     free(appData->version);
     free(appData->pName);
 }

@@ -11,6 +11,8 @@
 #define MIN_SETTING_LENGTH 3
 #define MAX_NAME_LENGTH 30
 #define MIN_NAME_LENGTH 3
+#define MAX_TYPE_LENGTH 30
+#define MIN_TYPE_LENGTH 3
 #define MAX_SENT_LENGTH 80
 #define MAX_PATH_LENGTH 260
 
@@ -33,17 +35,23 @@
 #define DATA_DIR "sql-generator\\data"
 #define CONFIG_FILE "sql-generator\\config\\config.ini"
 #define PROFILES_FILE "sql-generator\\config\\profiles.ini"
+#define TYPES_FILE "sql-generator\\config\\types.ini"
 
 void initFs(AppData *);
 void initFolders(char *);
 void initConfigFile(char *, List *);
 void initProfilesFile(char *, AppData *);
+void initTypesFile(char *, AppData *);
+void getTypes(char *, void *);
+void getNumReqTypes(char *, void *);
 int fileExists(char *, char *);
 FILE *openFile(char *, char *, char *);
 void applySettings(List *, AppData *);
 void applySetting(char *, void *);
 void setDefaultData(AppData *);
 void getFileContent(List *, int, int, FILE *);
+void printTypesFile(FILE *);
+void setDefaultTypes(List *);
 void printConfigFile(FILE *);
 void initUserFile(char *);
 
