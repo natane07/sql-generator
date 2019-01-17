@@ -14,6 +14,10 @@
 #define DEF_SCREEN_WIDTH 1920
 #define DEF_SCREEN_HEIGHT 1080
 
+//menus
+#define CRTABLE 0
+#define INSDATA 1
+
 //errors
 #define ERR_WIN_REG "Window Registration Failed!"
 #define ERR_WIN_CR "Window Creation Failed!"

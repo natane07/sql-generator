@@ -4,6 +4,7 @@
 #include "..\include\parser.h"
 #include "..\include\menu.h"
 #include "..\include\crtable.h"
+#include "..\include\insdata.h"
 #include "..\include\sql.h"
 #include <stdlib.h>
 #include <stddef.h>
@@ -30,7 +31,9 @@ void setAppData(AppData *appData)
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     static HWND mainMenuControls[MAIN_WIN_CTRL_NUM];
+    static HWND insDataControls[INSDATA_WIN_CTRL_NUM];
     static CrTableControls crTableMenuControls;
+    static int currentMenu;
     static HMENU hMenu;
     static AppData appData;
     switch (msg)
@@ -52,7 +55,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             break;
         case GTMENU_ID:
             EnableMenuItem(hMenu, GTMENU_ID, MF_GRAYED);
-            destroyCrTableMenu(&crTableMenuControls);
+            switch (currentMenu)
+            {
+            case CRTABLE:
+                destroyCrTableMenu(&crTableMenuControls);
+                break;
+            case INSDATA:
+                destroyInsDataMenu(insDataControls);
+                break;
+            }
             createMainMenu(hwnd, mainMenuControls);
             setExistingProfiles(hwnd, &appData);
             setVersion(hwnd, &appData);
@@ -62,6 +73,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             int ok = loadProfile(&appData);
             if (ok)
             {
+                currentMenu = CRTABLE;
                 destroyMainMenu(mainMenuControls);
                 createCrTableMenu(hwnd, &crTableMenuControls, &appData.rules);
                 EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
@@ -69,7 +81,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             break;
         }
         case INSDATA_ID:
+        {
+            int ok = loadProfile(&appData);
+            if (ok)
+            {
+                currentMenu = INSDATA;
+                destroyMainMenu(mainMenuControls);
+                createInsDataMenu(hwnd, insDataControls);
+                EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
+            }
             break;
+        }
         case PROFILESEL_ID:
             if (HIWORD(wParam) == CBN_SELCHANGE)
             {

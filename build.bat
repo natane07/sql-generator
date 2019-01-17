@@ -6,4 +6,5 @@ gcc -Wall -mwindows -c src/file.c -o obj/file.o
 gcc -Wall -mwindows -c src/utils.c -o obj/utils.o
 gcc -Wall -mwindows -c src/sql.c -o obj/sql.o
 gcc -Wall -mwindows -c src/crtable.c -o obj/crtable.o
-gcc obj/main.o obj/menu.o obj/app.o obj/file.o obj/utils.o obj/crtable.o obj/sql.o lib/list.o lib/parser.o -o bin/sql-generator.exe
+gcc -Wall -mwindows -c src/insdata.c -o obj/insdata.o
+gcc obj/main.o obj/menu.o obj/app.o obj/file.o obj/utils.o obj/crtable.o obj/sql.o obj/insdata.o lib/list.o lib/parser.o -o bin/sql-generator.exe
