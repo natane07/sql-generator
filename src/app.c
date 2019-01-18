@@ -33,7 +33,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     static HWND mainMenuControls[MAIN_WIN_CTRL_NUM];
     static HWND insDataControls[INSDATA_WIN_CTRL_NUM];
     static CrTableControls crTableMenuControls;
-    static int currentMenu;
+    static int currentMenu = MAIN;
     static HMENU hMenu;
     static AppData appData;
     switch (msg)
@@ -67,28 +67,43 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             createMainMenu(hwnd, mainMenuControls);
             setExistingProfiles(hwnd, &appData);
             setVersion(hwnd, &appData);
+            currentMenu = MAIN;
             break;
         case CRTABLE_ID:
         {
-            int ok = loadProfile(&appData);
-            if (ok)
+            if (currentMenu == MAIN)
             {
                 currentMenu = CRTABLE;
-                destroyMainMenu(mainMenuControls);
-                createCrTableMenu(hwnd, &crTableMenuControls, &appData.rules);
-                EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
+                int ok = loadProfile(&appData);
+                if (ok)
+                {
+                    destroyMainMenu(mainMenuControls);
+                    createCrTableMenu(hwnd, &crTableMenuControls, &appData.rules);
+                    EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
+                }
+                else
+                {
+                    currentMenu = MAIN;
+                }
             }
             break;
         }
         case INSDATA_ID:
         {
-            int ok = loadProfile(&appData);
-            if (ok)
+            if (currentMenu == MAIN)
             {
                 currentMenu = INSDATA;
-                destroyMainMenu(mainMenuControls);
-                createInsDataMenu(hwnd, insDataControls);
-                EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
+                int ok = loadProfile(&appData);
+                if (ok)
+                {
+                    destroyMainMenu(mainMenuControls);
+                    createInsDataMenu(hwnd, insDataControls);
+                    EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
+                }
+                else
+                {
+                    currentMenu = MAIN;
+                }
             }
             break;
         }

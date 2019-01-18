@@ -15,6 +15,7 @@
 #define DEF_SCREEN_HEIGHT 1080
 
 //menus
+#define MAIN -1
 #define CRTABLE 0
 #define INSDATA 1
 
