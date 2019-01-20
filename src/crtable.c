@@ -2,6 +2,7 @@
 #include ".\..\include\app.h"
 #include ".\..\include\utils.h"
 #include ".\..\include\sql.h"
+#include ".\..\include\file.h"
 #include <windows.h>
 
 void createCrTableMenu(HWND hwnd, CrTableControls *crTableMenuControls, SqlRules *rules)
@@ -36,13 +37,17 @@ void addColumn(HWND hwnd, CrTableControls *crTableMenuControls, int mode, SqlRul
     {
         int index = crTableMenuControls->colNumber * CTRL_PER_COL;
         int columnNumber = crTableMenuControls->colNumber;
-        crTableMenuControls->columns[index] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", COLUMNEDIT_MSG, STL_EDIT, 530, 75 + (COLUMN_SPACE_PX * columnNumber), 150, 24, hwnd, (HMENU)COL_FIRST_ASSIGNABLE_ID + index, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
-        crTableMenuControls->columns[index + 1] = CreateWindow("COMBOBOX", COLUMNEDIT_MSG, STL_COMBO, 690, 75 + (COLUMN_SPACE_PX * columnNumber), 150, 100, hwnd, (HMENU)COL_FIRST_ASSIGNABLE_ID + index + 1, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
-        crTableMenuControls->columns[index + 2] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", COLUMNEDIT_MSG, STL_EDIT, 850, 75 + (COLUMN_SPACE_PX * columnNumber), 75, 24, hwnd, (HMENU)COL_FIRST_ASSIGNABLE_ID + index + 2, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        long long id = COL_FIRST_ASSIGNABLE_ID + index;
+        crTableMenuControls->columns[index] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", COLUMNEDIT_MSG, STL_EDIT, 530, 75 + (COLUMN_SPACE_PX * columnNumber), 150, 24, hwnd, (HMENU)id, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        crTableMenuControls->columns[index + 1] = CreateWindow("COMBOBOX", COLUMNEDIT_MSG, STL_COMBO, 690, 75 + (COLUMN_SPACE_PX * columnNumber), 150, 100, hwnd, (HMENU)COMBOS_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        ++id;
+        crTableMenuControls->columns[index + 2] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", COLUMNEDIT_MSG, STL_EDIT, 850, 75 + (COLUMN_SPACE_PX * columnNumber), 75, 24, hwnd, (HMENU)id, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
         crTableMenuControls->columns[index + 3] = CreateWindow("BUTTON", RD_AI, STL_RADIO, 935, 75 + (COLUMN_SPACE_PX * columnNumber), 50, 24, hwnd, (HMENU)RADIO_BTN_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
         crTableMenuControls->columns[index + 4] = CreateWindow("BUTTON", RD_NULL, STL_RADIO, 995, 75 + (COLUMN_SPACE_PX * columnNumber), 50, 24, hwnd, (HMENU)RADIO_BTN_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
-        changeRadioState(crTableMenuControls->columns[index + 4]);
         crTableMenuControls->columns[index + 5] = CreateWindow("BUTTON", RD_PK, STL_RADIO, 1055, 75 + (COLUMN_SPACE_PX * columnNumber), 50, 24, hwnd, (HMENU)RADIO_BTN_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        changeRadioState(crTableMenuControls->columns[index + 4]);
+        addTypes(crTableMenuControls->columns[index + 1], rules);
+        checkTypeReqNum(crTableMenuControls->columns[index + 2], crTableMenuControls->columns[index + 1], rules);
         crTableMenuControls->colNumber++;
     }
     if (mode == FK_ADD && crTableMenuControls->fkNumber < rules->maxFk)
@@ -77,6 +82,31 @@ void removeColumn(HWND hwnd, CrTableControls *crTableMenuControls, int mode, Sql
             DestroyWindow(crTableMenuControls->columns[index + i]);
         }
         crTableMenuControls->colNumber--;
+    }
+}
+
+void addTypes(HWND combo, SqlRules *rules)
+{
+    Element *current = rules->types->first;
+    while (current != NULL)
+    {
+        addStringToComboDir(combo, current->content);
+        current = current->next;
+    }
+    setComboCursorDir(combo, 0);
+}
+
+void checkTypeReqNum(HWND edit, HWND combo, SqlRules *rules)
+{
+    char buffer[MAX_TYPE_LENGTH];
+    getCurrentStringFromComboDir(combo, buffer);
+    if (has(rules->numReqTypes, buffer))
+    {
+        disableEdit(edit);
+    }
+    else
+    {
+        enableEdit(edit);
     }
 }
 

@@ -5,6 +5,7 @@
 #include "list.h"
 
 //default sql types
+#define SQL_DEFAULT_TYPES_NUM 6
 #define SQL_TYPE_1 "INT"
 #define SQL_TYPE_2 "CHAR"
 #define SQL_TYPE_3 "VARCHAR"

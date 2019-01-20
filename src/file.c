@@ -90,6 +90,7 @@ void initTypesFile(char *path, AppData *appData)
     FILE *fp = NULL;
     char *file = TYPES_FILE;
     List *temp = listInit();
+    int i;
     if (fileExists(path, file) == 1)
     {
         fp = openFile(path, file, "r");
@@ -98,6 +99,9 @@ void initTypesFile(char *path, AppData *appData)
             getFileContent(temp, MAX_TYPE_LENGTH, MIN_TYPE_LENGTH, fp);
             forEach(temp, getTypes, appData->rules.types);
             forEach(temp, getNumReqTypes, appData->rules.numReqTypes);
+            if (appData->rules.types->length > SQL_DEFAULT_TYPES_NUM)
+                for (i = 0; i < SQL_DEFAULT_TYPES_NUM; i++)
+                    shift(appData->rules.types);
         }
     }
     else
@@ -226,19 +230,12 @@ void printTypesFile(FILE *fp)
 
 void setDefaultTypes(List *types)
 {
-    char buffer[MAX_TYPE_LENGTH];
-    sprintf(buffer, "%s=%s", SQL_TYPE_1, SQL_TYPE_1_REQ_NUM);
-    push(types, buffer);
-    sprintf(buffer, "%s=%s", SQL_TYPE_2, SQL_TYPE_2_REQ_NUM);
-    push(types, buffer);
-    sprintf(buffer, "%s=%s", SQL_TYPE_3, SQL_TYPE_3_REQ_NUM);
-    push(types, buffer);
-    sprintf(buffer, "%s=%s", SQL_TYPE_4, SQL_TYPE_4_REQ_NUM);
-    push(types, buffer);
-    sprintf(buffer, "%s=%s", SQL_TYPE_5, SQL_TYPE_5_REQ_NUM);
-    push(types, buffer);
-    sprintf(buffer, "%s=%s", SQL_TYPE_6, SQL_TYPE_6_REQ_NUM);
-    push(types, buffer);
+    push(types, SQL_TYPE_1);
+    push(types, SQL_TYPE_2);
+    push(types, SQL_TYPE_3);
+    push(types, SQL_TYPE_4);
+    push(types, SQL_TYPE_5);
+    push(types, SQL_TYPE_6);
 }
 
 void printConfigFile(FILE *fp)

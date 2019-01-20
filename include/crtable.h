@@ -11,7 +11,7 @@
 #define CRTABLE_WIN_COL_CTRL_NUM 120
 #define CRTABLE_WIN_FK_CTRL_NUM 18
 #define COLUMN_SPACE_PX 30
-#define CTRL_PER_COL 6
+#define CTRL_PER_COL 2
 #define CTRL_PER_FK 3
 
 //controls
@@ -49,10 +49,10 @@
 
 //available range for additional controls
 #define COLUMNEDIT_MSG ""
-#define MAX_ADDITIONAL_CTRL_NUM 30
 #define COL_FIRST_ASSIGNABLE_ID 100
 #define FK_FIRST_ASSIGNABLE_ID 300
 #define RADIO_BTN_ID 1100
+#define COMBOS_ID 1101
 
 //column type for addColumn and removeColumn function
 #define FK_ADD 0
@@ -75,6 +75,8 @@ void createCrTableMenu(HWND, CrTableControls *, SqlRules *);
 void addColumn(HWND, CrTableControls *, int, SqlRules *);
 void removeColumn(HWND, CrTableControls *, int, SqlRules *);
 void getTableName(HWND, char *);
+void addTypes(HWND, SqlRules *);
+void checkTypeReqNum(HWND, HWND, SqlRules *);
 void addTableToList(HWND, char *);
 void destroyCrTableMenu(CrTableControls *);
 

@@ -76,6 +76,11 @@ int addStringToCombo(HWND hwnd, int controlId, char *content)
     return SendDlgItemMessage(hwnd, controlId, CB_ADDSTRING, (WPARAM)0, (LPARAM)content);
 }
 
+void addStringToComboDir(HWND combo, char *content)
+{
+    SendMessage(combo, CB_ADDSTRING, (WPARAM)0, (LPARAM)content);
+}
+
 int addStringToList(HWND hwnd, int controlId, char *content)
 {
     return SendDlgItemMessage(hwnd, controlId, LB_ADDSTRING, (WPARAM)0, (LPARAM)content);
@@ -91,9 +96,19 @@ void setComboCursor(HWND hwnd, int controlId, int position)
     SendDlgItemMessage(hwnd, controlId, CB_SETCURSEL, (WPARAM)position, (LPARAM)0);
 }
 
+void setComboCursorDir(HWND combo, int position)
+{
+    SendMessage(combo, CB_SETCURSEL, (WPARAM)position, (LPARAM)0);
+}
+
 int getComboCursor(HWND hwnd, int controlId)
 {
     return SendDlgItemMessage(hwnd, controlId, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+}
+
+int getComboCursorDir(HWND combo)
+{
+    return SendMessage(combo, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
 }
 
 void sendWinText(HWND hwnd, int controlId, char *text)
@@ -106,9 +121,19 @@ void getStringFromCombo(HWND hwnd, int controlId, int index, char *destination)
     SendDlgItemMessage(hwnd, controlId, CB_GETLBTEXT, (WPARAM)index, (LPARAM)destination);
 }
 
+void getStringFromComboDir(HWND combo, int index, char *destination)
+{
+    SendMessage(combo, CB_GETLBTEXT, (WPARAM)index, (LPARAM)destination);
+}
+
 void getStringFromWin(HWND hwnd, int controlId, char *destination, int maxLength)
 {
     SendDlgItemMessage(hwnd, controlId, WM_GETTEXT, (WPARAM)maxLength, (LPARAM)destination);
+}
+
+void getCurrentStringFromComboDir(HWND combo, char *destination)
+{
+    getStringFromComboDir(combo, getComboCursorDir(combo), destination);
 }
 
 void changeRadioState(HWND hwnd)
@@ -122,6 +147,16 @@ void changeRadioState(HWND hwnd)
     {
         SendMessage(hwnd, BM_SETCHECK, (WPARAM)BST_CHECKED, (LPARAM)0);
     }
+}
+
+void enableEdit(HWND edit)
+{
+    SendMessage(edit, EM_SETREADONLY, (WPARAM)FALSE, (LPARAM)0);
+}
+
+void disableEdit(HWND edit)
+{
+    SendMessage(edit, EM_SETREADONLY, (WPARAM)TRUE, (LPARAM)0);
 }
 
 void createClass(WNDCLASSEX *wc, HINSTANCE hInstance, const char *className, LRESULT(CALLBACK *wndProc)(HWND, UINT, WPARAM, LPARAM))

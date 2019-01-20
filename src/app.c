@@ -119,6 +119,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case PROFILECRSUB_ID:
             createProfile(hwnd, &appData);
             break;
+        case COMBOS_ID:
+            if (HIWORD(wParam) == CBN_SELCHANGE)
+            {
+                //do a foreach (check for every control and not just one bc stuck here).
+                // checkTypeReqNum(, (HWND)lParam, rules);
+            }
+            break;
         case RADIO_BTN_ID:
             changeRadioState((HWND)lParam);
             break;
