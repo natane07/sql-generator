@@ -21,7 +21,13 @@ void createCrTableMenu(HWND hwnd, CrTableControls *crTableMenuControls, SqlRules
     crTableMenuControls->mainControls[10] = CreateWindow("BUTTON", SAVETABLE_MSG, STL_BUTTON, 990, 700, 150, 24, hwnd, (HMENU)SAVETABLE_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     crTableMenuControls->mainControls[11] = CreateWindow("BUTTON", REMOVECOL_MSG, STL_BUTTON, 1310, 560, 150, 24, hwnd, (HMENU)REMOVECOL_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     crTableMenuControls->mainControls[12] = CreateWindow("BUTTON", REMOVEFK_MSG, STL_BUTTON, 1310, 590, 150, 24, hwnd, (HMENU)REMOVEFK_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+    crTableMenuControls->currentTableNumber = 0;
+    //save table
+    //to model
+    //check if safe
+    //then add model tables to list
     addColumn(hwnd, crTableMenuControls, SET_MENU, rules);
+    saveTable(hwnd, crTableMenuControls, rules);
     getTableName(hwnd, buffer);
     addTableToList(hwnd, buffer);
 }
@@ -35,10 +41,12 @@ void addColumn(HWND hwnd, CrTableControls *crTableMenuControls, int mode, SqlRul
     }
     if ((mode == COL_ADD || mode == SET_MENU) && crTableMenuControls->colNumber < rules->maxCol)
     {
-        int index = crTableMenuControls->colNumber * CTRL_PER_COL;
+        int index = crTableMenuControls->colNumber * CTRL_PER_FULL_COL;
         int columnNumber = crTableMenuControls->colNumber;
-        long long id = COL_FIRST_ASSIGNABLE_ID + index;
-        crTableMenuControls->columns[index] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", COLUMNEDIT_MSG, STL_EDIT, 530, 75 + (COLUMN_SPACE_PX * columnNumber), 150, 24, hwnd, (HMENU)id, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        long long id = COL_FIRST_ASSIGNABLE_ID + crTableMenuControls->colNumber * CTRL_PER_COL;
+        char colName[SQL_COLUMN_NAME_MAX_LENGTH];
+        sprintf(colName, "%s%d", SQL_COL_DEF_NAME, crTableMenuControls->colNumber + 1);
+        crTableMenuControls->columns[index] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", colName, STL_EDIT, 530, 75 + (COLUMN_SPACE_PX * columnNumber), 150, 24, hwnd, (HMENU)id, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
         crTableMenuControls->columns[index + 1] = CreateWindow("COMBOBOX", COLUMNEDIT_MSG, STL_COMBO, 690, 75 + (COLUMN_SPACE_PX * columnNumber), 150, 100, hwnd, (HMENU)COMBOS_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
         ++id;
         crTableMenuControls->columns[index + 2] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", COLUMNEDIT_MSG, STL_EDIT, 850, 75 + (COLUMN_SPACE_PX * columnNumber), 75, 24, hwnd, (HMENU)id, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
@@ -47,8 +55,9 @@ void addColumn(HWND hwnd, CrTableControls *crTableMenuControls, int mode, SqlRul
         crTableMenuControls->columns[index + 5] = CreateWindow("BUTTON", RD_PK, STL_RADIO, 1055, 75 + (COLUMN_SPACE_PX * columnNumber), 50, 24, hwnd, (HMENU)RADIO_BTN_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
         changeRadioState(crTableMenuControls->columns[index + 4]);
         addTypes(crTableMenuControls->columns[index + 1], rules);
-        checkTypeReqNum(crTableMenuControls->columns[index + 2], crTableMenuControls->columns[index + 1], rules);
         crTableMenuControls->colNumber++;
+        checkTypeReqNum(crTableMenuControls, rules);
+        checkPkNonVacuity(crTableMenuControls);
     }
     if (mode == FK_ADD && crTableMenuControls->fkNumber < rules->maxFk)
     {
@@ -76,8 +85,8 @@ void removeColumn(HWND hwnd, CrTableControls *crTableMenuControls, int mode, Sql
     if (mode == COL_DEL && crTableMenuControls->colNumber > 1)
     {
         int i;
-        int index = (crTableMenuControls->colNumber - 1) * CTRL_PER_COL;
-        for (i = 0; i < CTRL_PER_COL; i++)
+        int index = (crTableMenuControls->colNumber - 1) * CTRL_PER_FULL_COL;
+        for (i = 0; i < CTRL_PER_FULL_COL; i++)
         {
             DestroyWindow(crTableMenuControls->columns[index + i]);
         }
@@ -96,23 +105,120 @@ void addTypes(HWND combo, SqlRules *rules)
     setComboCursorDir(combo, 0);
 }
 
-void checkTypeReqNum(HWND edit, HWND combo, SqlRules *rules)
+void checkTypeReqNum(CrTableControls *controls, SqlRules *rules)
 {
+    int i;
+    int ctrlPerCol = CTRL_PER_FULL_COL;
+    int indexOfCombo = COL_TYPE_COMBO_INDEX;
+    int indexOfEdit = COL_TYPE_EDIT_INDEX;
     char buffer[MAX_TYPE_LENGTH];
-    getCurrentStringFromComboDir(combo, buffer);
-    if (has(rules->numReqTypes, buffer))
+    HWND combo, edit;
+    for (i = 0; i < controls->colNumber; i++)
     {
-        disableEdit(edit);
+        combo = controls->columns[i * ctrlPerCol + indexOfCombo];
+        edit = controls->columns[i * ctrlPerCol + indexOfEdit];
+        getCurrentStringFromComboDir(combo, buffer);
+        if (has(rules->numReqTypes, buffer))
+        {
+            enableEdit(edit);
+        }
+        else
+        {
+            disableEdit(edit);
+        }
     }
-    else
+}
+
+void checkPkNonVacuity(CrTableControls *controls)
+{
+    int i;
+    int ctrlPerCol = CTRL_PER_FULL_COL;
+    int indexOfNull = COL_NULL_INDEX;
+    int indexOfPk = COL_PK_INDEX;
+    HWND null, pk;
+    for (i = 0; i < controls->colNumber; i++)
     {
-        enableEdit(edit);
+        null = controls->columns[i * ctrlPerCol + indexOfNull];
+        pk = controls->columns[i * ctrlPerCol + indexOfPk];
+        if (getRadioState(pk))
+        {
+            disableRadio(null);
+        }
     }
+}
+
+SqlTable saveTable(HWND hwnd, CrTableControls *controls, SqlRules *rules)
+{
+    int i;
+    SqlTable table;
+    char tName[SQL_TABLE_NAME_MAX_LENGTH];
+    int ctrlPerCol = CTRL_PER_FULL_COL;
+    getTableName(hwnd, tName);
+    setTable(&table, tName);
+    table.columnCount = controls->colNumber;
+    SqlColumn *cols = malloc(sizeof(SqlColumn) * table.columnCount);
+    for (i = 0; i < table.columnCount; i++)
+    {
+        getStringFromWinDir(controls->columns[i * ctrlPerCol + COL_TITLE_INDEX], cols[i].name, SQL_COLUMN_NAME_MAX_LENGTH);
+        getCurrentStringFromComboDir(controls->columns[i * ctrlPerCol + COL_TYPE_COMBO_INDEX], cols[i].type);
+        if (has(rules->numReqTypes, cols[i].type))
+        {
+            char digit[MAX_DIGIT_LENGTH];
+            getStringFromWinDir(controls->columns[i * ctrlPerCol + COL_TYPE_EDIT_INDEX], digit, MAX_DIGIT_LENGTH);
+            cols[i].size = atoi(digit);
+        }
+        else
+        {
+            cols[i].size = -1;
+        }
+        cols[i].ai = getRadioState(controls->columns[i * ctrlPerCol + COL_AI_INDEX]);
+        cols[i].pk = getRadioState(controls->columns[i * ctrlPerCol + COL_PK_INDEX]);
+        cols[i].nullable = getRadioState(controls->columns[i * ctrlPerCol + COL_NULL_INDEX]);
+    }
+    addColumns(&table, cols, table.columnCount);
+    free(cols);
+    return table;
+}
+
+void loadTable(SqlTable *table, HWND hwnd, CrTableControls *controls, SqlRules *rules)
+{
+    int i, index;
+    int ctrlPerCol = CTRL_PER_FULL_COL;
+    char digit[MAX_DIGIT_LENGTH];
+    destroyMenu(controls->columns, CRTABLE_WIN_COL_CTRL_NUM);
+    destroyMenu(controls->fk, CRTABLE_WIN_FK_CTRL_NUM);
+    controls->fkNumber = 0;
+    controls->colNumber = 0;
+    setTableName(hwnd, table->name);
+    for (i = 0; i < table->columnCount; i++)
+    {
+        addColumn(hwnd, controls, COL_ADD, rules);
+        sendWinTextDir(controls->columns[i * ctrlPerCol + COL_TITLE_INDEX], table->columns[i].name);
+        index = findStringIndexInComboDir(controls->columns[i * ctrlPerCol + COL_TYPE_COMBO_INDEX], table->columns[i].type);
+        if (index == CB_ERR)
+            index = 0;
+        setComboCursorDir(controls->columns[i * ctrlPerCol + COL_TYPE_COMBO_INDEX], index);
+        if (table->columns[i].size != -1)
+        {
+            sprintf(digit, "%d", table->columns[i].size);
+            sendWinTextDir(controls->columns[i * ctrlPerCol + COL_TYPE_EDIT_INDEX], digit);
+        }
+        setRadioState(controls->columns[i * ctrlPerCol + COL_AI_INDEX], table->columns[i].ai);
+        setRadioState(controls->columns[i * ctrlPerCol + COL_PK_INDEX], table->columns[i].pk);
+        setRadioState(controls->columns[i * ctrlPerCol + COL_NULL_INDEX], table->columns[i].nullable);
+    }
+    checkTypeReqNum(controls, rules);
+    checkPkNonVacuity(controls);
 }
 
 void getTableName(HWND hwnd, char *buffer)
 {
     getStringFromWin(hwnd, TITLEDIT_ID, buffer, SQL_TABLE_NAME_MAX_LENGTH);
+}
+
+void setTableName(HWND hwnd, char *buffer)
+{
+    sendWinText(hwnd, TITLEDIT_ID, buffer);
 }
 
 void addTableToList(HWND hwnd, char *tabName)

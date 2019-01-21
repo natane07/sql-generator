@@ -1,4 +1,5 @@
 #include ".\..\include\sql.h"
+#include ".\..\include\utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,20 +28,20 @@ void setDefaultPrimaryKey(SqlColumn *col)
     col->ai = 1;
     col->nullable = 0;
     col->size = -1;
-    col->type = "INT";
-    col->name = "id";
+    stringCopy(col->type, "INT", SQL_TYPE_LENGTH);
+    stringCopy(col->name, "id", SQL_COLUMN_NAME_MAX_LENGTH);
 }
 
 void setColumnName(SqlColumn *col, char *name)
 {
-    col->name = name;
+    stringCopy(col->name, name, SQL_COLUMN_NAME_MAX_LENGTH);
 }
 
 SqlColumn setColumn(char *type, char *name, int size, int nullable, int ai, int pk)
 {
     SqlColumn col;
-    col.type = type;
-    col.name = name;
+    stringCopy(col.type, type, SQL_TYPE_LENGTH);
+    stringCopy(col.name, name, SQL_COLUMN_NAME_MAX_LENGTH);
     col.size = size;
     col.nullable = nullable;
     col.ai = ai;
@@ -51,15 +52,15 @@ SqlColumn setColumn(char *type, char *name, int size, int nullable, int ai, int 
 SqlForeignKey setFk(char *columnName, char *pointedTableName, char *pointedColumnName)
 {
     SqlForeignKey fk;
-    fk.columnName = columnName;
-    fk.pointedTableName = pointedTableName;
-    fk.pointedColumnName = pointedColumnName;
+    stringCopy(fk.columnName, columnName, SQL_COLUMN_NAME_MAX_LENGTH);
+    stringCopy(fk.pointedTableName, pointedTableName, SQL_TABLE_NAME_MAX_LENGTH);
+    stringCopy(fk.pointedColumnName, pointedColumnName, SQL_COLUMN_NAME_MAX_LENGTH);
     return fk;
 }
 
 void setTable(SqlTable *tab, char *name)
 {
-    tab->name = name;
+    stringCopy(tab->name, name, SQL_TABLE_NAME_MAX_LENGTH);
     tab->columnCount = 0;
     tab->relationCount = 0;
     tab->relations = NULL;
@@ -180,10 +181,8 @@ void writeColumn(char *buffer, SqlColumn *col)
     sprintf(buffer, "%s %s", col->name, col->type);
     if (col->size != -1)
     {
-        char size[ITOA_SIZE];
         char indicator[SQL_COLUMN_MAX_SIZE_DIGIT];
-        itoa(col->size, size, 10);
-        sprintf(indicator, "(%s)", size);
+        sprintf(indicator, "(%d)", col->size);
         strcat(buffer, indicator);
     }
     if (col->ai)
@@ -208,7 +207,7 @@ void addPrimaryKey(char *buffer, SqlTable *tab)
     {
         if (tab->columns[i].pk && !counter)
         {
-            strcpy(pkList, tab->columns[i].name);
+            stringCopy(pkList, tab->columns[i].name, SQL_COLUMN_NAME_MAX_LENGTH);
             counter++;
         }
         else if (tab->columns[i].pk)

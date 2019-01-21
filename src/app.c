@@ -122,12 +122,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case COMBOS_ID:
             if (HIWORD(wParam) == CBN_SELCHANGE)
             {
-                //do a foreach (check for every control and not just one bc stuck here).
-                // checkTypeReqNum(, (HWND)lParam, rules);
+                checkTypeReqNum(&crTableMenuControls, &appData.rules);
             }
             break;
         case RADIO_BTN_ID:
             changeRadioState((HWND)lParam);
+            checkPkNonVacuity(&crTableMenuControls);
             break;
         case ADDCOLUMN_ID:
             addColumn(hwnd, &crTableMenuControls, COL_ADD, &appData.rules);

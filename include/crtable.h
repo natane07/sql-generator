@@ -13,6 +13,13 @@
 #define COLUMN_SPACE_PX 30
 #define CTRL_PER_COL 2
 #define CTRL_PER_FK 3
+#define CTRL_PER_FULL_COL 6
+#define COL_TITLE_INDEX 0
+#define COL_TYPE_COMBO_INDEX 1
+#define COL_TYPE_EDIT_INDEX 2
+#define COL_AI_INDEX 3
+#define COL_NULL_INDEX 4
+#define COL_PK_INDEX 5
 
 //controls
 #define LITABHINT_ID 10
@@ -69,14 +76,18 @@ struct CrTableControls
     HWND columns[CRTABLE_WIN_COL_CTRL_NUM];
     int fkNumber;
     int colNumber;
+    int currentTableNumber;
 };
 
 void createCrTableMenu(HWND, CrTableControls *, SqlRules *);
 void addColumn(HWND, CrTableControls *, int, SqlRules *);
 void removeColumn(HWND, CrTableControls *, int, SqlRules *);
 void getTableName(HWND, char *);
+SqlTable saveTable(HWND, CrTableControls *, SqlRules *);
+void loadTable(SqlTable *, HWND, CrTableControls *, SqlRules *);
 void addTypes(HWND, SqlRules *);
-void checkTypeReqNum(HWND, HWND, SqlRules *);
+void checkTypeReqNum(CrTableControls *, SqlRules *);
+void checkPkNonVacuity(CrTableControls *);
 void addTableToList(HWND, char *);
 void destroyCrTableMenu(CrTableControls *);
 

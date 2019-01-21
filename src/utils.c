@@ -17,6 +17,12 @@ void initMemory(char *str, int length)
     memset(str, '\0', length);
 }
 
+void stringCopy(char *destination, char *source, int length)
+{
+    strncpy(destination, source, length - 1);
+    remCrlf(destination);
+}
+
 char *setString(char *destination, char *source)
 {
     destination = malloc((strlen(source) + 1) * sizeof(char));
@@ -91,6 +97,11 @@ int findStringIndexInCombo(HWND hwnd, int controlId, char *content)
     return SendDlgItemMessage(hwnd, controlId, CB_FINDSTRING, (WPARAM)1, (LPARAM)content);
 }
 
+int findStringIndexInComboDir(HWND hwnd, char *content)
+{
+    return SendMessage(hwnd, CB_FINDSTRING, (WPARAM)1, (LPARAM)content);
+}
+
 void setComboCursor(HWND hwnd, int controlId, int position)
 {
     SendDlgItemMessage(hwnd, controlId, CB_SETCURSEL, (WPARAM)position, (LPARAM)0);
@@ -116,6 +127,11 @@ void sendWinText(HWND hwnd, int controlId, char *text)
     SendDlgItemMessage(hwnd, controlId, WM_SETTEXT, (WPARAM)0, (LPARAM)text);
 }
 
+void sendWinTextDir(HWND hwnd, char *text)
+{
+    SendMessage(hwnd, WM_SETTEXT, (WPARAM)0, (LPARAM)text);
+}
+
 void getStringFromCombo(HWND hwnd, int controlId, int index, char *destination)
 {
     SendDlgItemMessage(hwnd, controlId, CB_GETLBTEXT, (WPARAM)index, (LPARAM)destination);
@@ -131,9 +147,29 @@ void getStringFromWin(HWND hwnd, int controlId, char *destination, int maxLength
     SendDlgItemMessage(hwnd, controlId, WM_GETTEXT, (WPARAM)maxLength, (LPARAM)destination);
 }
 
+void getStringFromWinDir(HWND win, char *destination, int maxLength)
+{
+    SendMessage(win, WM_GETTEXT, (WPARAM)maxLength - 1, (LPARAM)destination);
+}
+
 void getCurrentStringFromComboDir(HWND combo, char *destination)
 {
     getStringFromComboDir(combo, getComboCursorDir(combo), destination);
+}
+
+int getRadioState(HWND hwnd)
+{
+    return SendMessage(hwnd, BM_GETCHECK, (WPARAM)0, (LPARAM)0);
+}
+
+void enableRadio(HWND hwnd)
+{
+    SendMessage(hwnd, BM_SETCHECK, (WPARAM)BST_CHECKED, (LPARAM)0);
+}
+
+void disableRadio(HWND hwnd)
+{
+    SendMessage(hwnd, BM_SETCHECK, (WPARAM)BST_UNCHECKED, (LPARAM)0);
 }
 
 void changeRadioState(HWND hwnd)
@@ -146,6 +182,18 @@ void changeRadioState(HWND hwnd)
     else
     {
         SendMessage(hwnd, BM_SETCHECK, (WPARAM)BST_CHECKED, (LPARAM)0);
+    }
+}
+
+void setRadioState(HWND hwnd, int checked)
+{
+    if (checked)
+    {
+        SendMessage(hwnd, BM_SETCHECK, (WPARAM)BST_CHECKED, (LPARAM)0);
+    }
+    else
+    {
+        SendMessage(hwnd, BM_SETCHECK, (WPARAM)BST_UNCHECKED, (LPARAM)0);
     }
 }
 

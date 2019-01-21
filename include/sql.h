@@ -33,14 +33,16 @@
 #define SQL_QUERY_MAX_LENGTH 4096
 #define SQL_COLUMN_MAX_LENGTH 128
 #define SQL_COLUMN_NAME_MAX_LENGTH 30
+#define SQL_COL_DEF_NAME "col"
 #define SQL_COLUMN_MAX_SIZE_DIGIT 10
 #define SQL_TABLE_NAME_MAX_LENGTH 30
+#define SQL_TYPE_LENGTH 30
 #define ITOA_SIZE 33
 
 struct SqlColumn
 {
-    char *type;
-    char *name;
+    char type[SQL_TYPE_LENGTH];
+    char name[SQL_COLUMN_NAME_MAX_LENGTH];
     int size;
     int nullable;
     int ai;
@@ -50,15 +52,15 @@ typedef struct SqlColumn SqlColumn;
 
 struct SqlForeignKey
 {
-    char *columnName;
-    char *pointedTableName;
-    char *pointedColumnName;
+    char columnName[SQL_COLUMN_NAME_MAX_LENGTH];
+    char pointedTableName[SQL_TABLE_NAME_MAX_LENGTH];
+    char pointedColumnName[SQL_COLUMN_NAME_MAX_LENGTH];
 };
 typedef struct SqlForeignKey SqlForeignKey;
 
 struct SqlTable
 {
-    char *name;
+    char name[SQL_TABLE_NAME_MAX_LENGTH];
     int columnCount;
     SqlColumn *columns;
     int relationCount;
