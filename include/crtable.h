@@ -6,7 +6,7 @@
 #include "sql.h"
 
 //view
-#define CRTABLE_NAME "Create Table"
+#define DEF_TAB_NAME "Table"
 #define CRTABLE_WIN_MAIN_CTRL_NUM 13
 #define CRTABLE_WIN_COL_CTRL_NUM 120
 #define CRTABLE_WIN_FK_CTRL_NUM 18
@@ -29,7 +29,7 @@
 #define TITLEHINT_ID 12
 #define TITLEHINT_MSG "Enter Table Name:"
 #define TITLEDIT_ID 13
-#define TITLEDIT_MSG "New Table"
+#define TITLEDIT_MSG DEF_TAB_NAME
 #define TABLIST_ID 14
 #define TABLIST_MSG ""
 #define ADDCOLUMN_ID 15
@@ -68,6 +68,15 @@
 #define FK_DEL 0
 #define COL_DEL 1
 
+//errors
+#define CRTAB_ERR_TAB_NAME_UNSAFE "Table name should only use alphanumeric characters!"
+#define CRTAB_ERR_TAB_NAME_LENGTH "Table name too short or too long!"
+#define CRTAB_ERR_TAB_NAME_EXISTS "Table name already exists in model!"
+#define CRTAB_ERR_COL_NAME_UNSAFE "Column name should only use alphanumeric characters!"
+#define CRTAB_ERR_COL_NAME_LENGTH "Column name too short or too long!"
+#define CRTAB_ERR_COL_NAME_EXISTS "Column name already exists in table!"
+#define CRTAB_ERR_COL_LENGTH "Type requiring length must have valid integer!"
+
 typedef struct CrTableControls CrTableControls;
 struct CrTableControls
 {
@@ -79,15 +88,22 @@ struct CrTableControls
     int currentTableNumber;
 };
 
-void createCrTableMenu(HWND, CrTableControls *, SqlRules *);
+void createCrTableMenu(HWND, CrTableControls *, SqlRules *, SqlModel *);
 void addColumn(HWND, CrTableControls *, int, SqlRules *);
 void removeColumn(HWND, CrTableControls *, int, SqlRules *);
 void getTableName(HWND, char *);
+void updateTableList(HWND, SqlModel *);
+void clearTableList(HWND);
+int checkTable(SqlModel *, SqlTable *, int, SqlRules *);
 SqlTable saveTable(HWND, CrTableControls *, SqlRules *);
+SqlTable getDefaultTable(int);
+void updateModel(SqlModel *, SqlTable *, int);
+void loadFallbackTable(SqlModel *, HWND, CrTableControls *, SqlRules *);
 void loadTable(SqlTable *, HWND, CrTableControls *, SqlRules *);
 void addTypes(HWND, SqlRules *);
 void checkTypeReqNum(CrTableControls *, SqlRules *);
 void checkPkNonVacuity(CrTableControls *);
+void setTableName(HWND, char *);
 void addTableToList(HWND, char *);
 void destroyCrTableMenu(CrTableControls *);
 

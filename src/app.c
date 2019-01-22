@@ -59,6 +59,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             {
             case CRTABLE:
                 destroyCrTableMenu(&crTableMenuControls);
+                destroyModel(&appData.model);
                 break;
             case INSDATA:
                 destroyInsDataMenu(insDataControls);
@@ -78,7 +79,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 if (ok)
                 {
                     destroyMainMenu(mainMenuControls);
-                    createCrTableMenu(hwnd, &crTableMenuControls, &appData.rules);
+                    createCrTableMenu(hwnd, &crTableMenuControls, &appData.rules, &appData.model);
                     EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
                 }
                 else
@@ -135,6 +136,34 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case ADDFK_ID:
             addColumn(hwnd, &crTableMenuControls, FK_ADD, &appData.rules);
             break;
+        case ADDTABLE_ID:
+        {
+            SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules);
+            if (checkTable(&appData.model, &table, crTableMenuControls.currentTableNumber, &appData.rules))
+            {
+                updateModel(&appData.model, &table, crTableMenuControls.currentTableNumber);
+                crTableMenuControls.currentTableNumber = appData.model.tableCount;
+                SqlTable defTab = getDefaultTable(appData.model.tableCount);
+                loadTable(&defTab, hwnd, &crTableMenuControls, &appData.rules);
+                updateModel(&appData.model, &defTab, crTableMenuControls.currentTableNumber);
+                updateTableList(hwnd, &appData.model);
+                destroyTable(&defTab);
+            }
+            destroyTable(&table);
+            printModel(&appData.model);
+        }
+        break;
+        case SAVETABLE_ID:
+        {
+            SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules);
+            if (checkTable(&appData.model, &table, crTableMenuControls.currentTableNumber, &appData.rules))
+            {
+                updateModel(&appData.model, &table, crTableMenuControls.currentTableNumber);
+                updateTableList(hwnd, &appData.model);
+            }
+            destroyTable(&table);
+        }
+        break;
         case REMOVEFK_ID:
             removeColumn(hwnd, &crTableMenuControls, FK_DEL, &appData.rules);
             break;

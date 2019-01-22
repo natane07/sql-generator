@@ -67,6 +67,11 @@ int compareKey(char *ini, char *comparator)
     return 0;
 }
 
+int simpleCompare(char *lstr, char *comparator)
+{
+    return strcmp(comparator, lstr) == 0;
+}
+
 void printError(const char *error)
 {
     MessageBox(NULL, error, "Error!", MB_ICONERROR | MB_OK);
@@ -155,6 +160,11 @@ void getStringFromWinDir(HWND win, char *destination, int maxLength)
 void getCurrentStringFromComboDir(HWND combo, char *destination)
 {
     getStringFromComboDir(combo, getComboCursorDir(combo), destination);
+}
+
+void clearListBox(HWND hwnd, int controlId)
+{
+    SendDlgItemMessage(hwnd, controlId, LB_RESETCONTENT, (WPARAM)0, (LPARAM)0);
 }
 
 int getRadioState(HWND hwnd)

@@ -5,9 +5,8 @@
 #include ".\..\include\file.h"
 #include <windows.h>
 
-void createCrTableMenu(HWND hwnd, CrTableControls *crTableMenuControls, SqlRules *rules)
+void createCrTableMenu(HWND hwnd, CrTableControls *crTableMenuControls, SqlRules *rules, SqlModel *model)
 {
-    char buffer[SQL_TABLE_NAME_MAX_LENGTH];
     crTableMenuControls->mainControls[0] = CreateWindow("STATIC", LITABHINT_MSG, STL_TEXT, 30, 10, 100, 24, hwnd, (HMENU)LITABHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     crTableMenuControls->mainControls[1] = CreateWindow("STATIC", TABEDHINT_MSG, STL_TEXT, 830, 10, 100, 24, hwnd, (HMENU)TABEDHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     crTableMenuControls->mainControls[2] = CreateWindow("STATIC", TITLEHINT_MSG, STL_TEXT, 690, 40, 150, 24, hwnd, (HMENU)TITLEHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
@@ -22,14 +21,12 @@ void createCrTableMenu(HWND hwnd, CrTableControls *crTableMenuControls, SqlRules
     crTableMenuControls->mainControls[11] = CreateWindow("BUTTON", REMOVECOL_MSG, STL_BUTTON, 1310, 560, 150, 24, hwnd, (HMENU)REMOVECOL_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     crTableMenuControls->mainControls[12] = CreateWindow("BUTTON", REMOVEFK_MSG, STL_BUTTON, 1310, 590, 150, 24, hwnd, (HMENU)REMOVEFK_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     crTableMenuControls->currentTableNumber = 0;
-    //save table
-    //to model
-    //check if safe
-    //then add model tables to list
     addColumn(hwnd, crTableMenuControls, SET_MENU, rules);
-    saveTable(hwnd, crTableMenuControls, rules);
-    getTableName(hwnd, buffer);
-    addTableToList(hwnd, buffer);
+    setModel(model);
+    SqlTable current = saveTable(hwnd, crTableMenuControls, rules);
+    updateModel(model, &current, crTableMenuControls->currentTableNumber);
+    destroyTable(&current);
+    updateTableList(hwnd, model);
 }
 
 void addColumn(HWND hwnd, CrTableControls *crTableMenuControls, int mode, SqlRules *rules)
@@ -147,6 +144,77 @@ void checkPkNonVacuity(CrTableControls *controls)
     }
 }
 
+void updateTableList(HWND hwnd, SqlModel *model)
+{
+    int i;
+    clearTableList(hwnd);
+    for (i = 0; i < model->tableCount; i++)
+    {
+        addTableToList(hwnd, model->tables[i].name);
+    }
+}
+
+void clearTableList(HWND hwnd)
+{
+    clearListBox(hwnd, TABLIST_ID);
+}
+
+int checkTable(SqlModel *model, SqlTable *table, int currentTableIndex, SqlRules *rules)
+{
+    int i;
+    List *tabNames = listInit();
+    List *cols = listInit();
+    for (i = 0; i < model->tableCount; i++)
+    {
+        push(tabNames, model->tables[i].name);
+    }
+    for (i = 0; i < table->columnCount; i++)
+    {
+        push(cols, table->columns[i].name);
+    }
+    if (!isStringSafe(table->name))
+    {
+        printError(CRTAB_ERR_TAB_NAME_UNSAFE);
+        return 0;
+    }
+    if (strlen(table->name) > SQL_TABLE_NAME_MAX_LENGTH || strlen(table->name) < SQL_TABLE_NAME_MIN_LENGTH)
+    {
+        printError(CRTAB_ERR_TAB_NAME_LENGTH);
+        return 0;
+    }
+    if (has(tabNames, table->name) && findIndex(tabNames, simpleCompare, table->name) != currentTableIndex)
+    {
+        printError(CRTAB_ERR_TAB_NAME_EXISTS);
+        return 0;
+    }
+    for (i = 0; i < table->columnCount; i++)
+    {
+        if (!isStringSafe(table->columns[i].name))
+        {
+            printError(CRTAB_ERR_COL_NAME_UNSAFE);
+            return 0;
+        }
+        if (strlen(table->columns[i].name) > SQL_COLUMN_NAME_MAX_LENGTH || strlen(table->columns[i].name) < SQL_COLUMN_NAME_MIN_LENGTH)
+        {
+            printError(CRTAB_ERR_COL_NAME_LENGTH);
+            return 0;
+        }
+        if (hasClone(cols))
+        {
+            printError(CRTAB_ERR_COL_NAME_EXISTS);
+            return 0;
+        }
+        if (has(rules->numReqTypes, table->columns[i].type) && (table->columns[i].size > MAX_VAR_LENGTH || table->columns[i].size < MIN_VAR_LENGTH))
+        {
+            printError(CRTAB_ERR_COL_LENGTH);
+            return 0;
+        }
+    }
+    destroyList(tabNames);
+    destroyList(cols);
+    return 1;
+}
+
 SqlTable saveTable(HWND hwnd, CrTableControls *controls, SqlRules *rules)
 {
     int i;
@@ -178,6 +246,73 @@ SqlTable saveTable(HWND hwnd, CrTableControls *controls, SqlRules *rules)
     addColumns(&table, cols, table.columnCount);
     free(cols);
     return table;
+}
+
+SqlTable getDefaultTable(int tabNumber)
+{
+    SqlTable table;
+    SqlColumn col;
+    char buffer[SQL_TABLE_NAME_MAX_LENGTH];
+    sprintf(buffer, "%s%d", DEF_TAB_NAME, tabNumber);
+    setTable(&table, buffer);
+    setDefaultPrimaryKey(&col);
+    addColumns(&table, &col, 1);
+    return table;
+}
+
+void updateModel(SqlModel *model, SqlTable *table, int tablePos)
+{
+    int i;
+    if (table == NULL)
+    {
+        int counter = 0;
+        int tCount = model->tableCount - 1;
+        SqlTable *temp = malloc(sizeof(SqlTable) * tCount);
+        for (i = 0; i < model->tableCount; i++)
+        {
+            if (i != tablePos)
+            {
+                setTable(temp + counter, model->tables[i].name);
+                addColumns(temp + counter, model->tables[i].columns, model->tables[i].columnCount);
+                counter++;
+            }
+        }
+        destroyModel(model);
+        addTables(model, temp, tCount);
+        free(temp);
+    }
+    else if (tablePos >= model->tableCount)
+    {
+        SqlTable *temp = malloc(sizeof(SqlTable) * (tablePos + 1));
+        for (i = 0; i < model->tableCount; i++)
+        {
+            setTable(temp + i, model->tables[i].name);
+            addColumns(temp + i, model->tables[i].columns, model->tables[i].columnCount);
+        }
+        setTable(temp + tablePos, table->name);
+        addColumns(temp + tablePos, table->columns, table->columnCount);
+        destroyModel(model);
+        addTables(model, temp, tablePos + 1);
+        free(temp);
+    }
+    else
+    {
+        destroyTable(model->tables + tablePos);
+        setTable(model->tables + tablePos, table->name);
+        addColumns(model->tables + tablePos, table->columns, table->columnCount);
+    }
+}
+
+void loadFallbackTable(SqlModel *model, HWND hwnd, CrTableControls *controls, SqlRules *rules)
+{
+    if (model->tableCount > 0)
+    {
+        loadTable(model->tables, hwnd, controls, rules);
+    }
+    else
+    {
+        
+    }
 }
 
 void loadTable(SqlTable *table, HWND hwnd, CrTableControls *controls, SqlRules *rules)

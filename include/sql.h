@@ -33,11 +33,15 @@
 #define SQL_QUERY_MAX_LENGTH 4096
 #define SQL_COLUMN_MAX_LENGTH 128
 #define SQL_COLUMN_NAME_MAX_LENGTH 30
+#define SQL_COLUMN_NAME_MIN_LENGTH 2
 #define SQL_COL_DEF_NAME "col"
 #define SQL_COLUMN_MAX_SIZE_DIGIT 10
 #define SQL_TABLE_NAME_MAX_LENGTH 30
+#define SQL_TABLE_NAME_MIN_LENGTH 3
 #define SQL_TYPE_LENGTH 30
 #define ITOA_SIZE 33
+#define MAX_VAR_LENGTH 255
+#define MIN_VAR_LENGTH 3
 
 struct SqlColumn
 {
@@ -90,6 +94,7 @@ void setColumnName(SqlColumn *, char *);
 SqlColumn setColumn(char *, char *, int, int, int, int);
 SqlForeignKey setFk(char *, char *, char *);
 void setTable(SqlTable *, char *);
+void destroyTable(SqlTable *);
 void setModel(SqlModel *);
 void addColumns(SqlTable *, SqlColumn *, int);
 void addTables(SqlModel *, SqlTable *, int);

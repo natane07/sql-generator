@@ -67,6 +67,18 @@ void setTable(SqlTable *tab, char *name)
     tab->columns = NULL;
 }
 
+void destroyTable(SqlTable *tab)
+{
+    if (tab->relations != NULL)
+    {
+        free(tab->relations);
+    }
+    if (tab->columns != NULL)
+    {
+        free(tab->columns);
+    }
+}
+
 void setModel(SqlModel *model)
 {
     model->tableCount = 0;
@@ -113,9 +125,9 @@ void printTable(SqlTable *tab)
     for (i = 0; i < tab->columnCount; i++)
     {
         SqlColumn col = tab->columns[i];
-        printf("%s %s\n", col.name, col.type);
+        printf("col - name %s - type %s - size %d - ai %d - null %d - pk %d\n", col.name, col.type, col.size, col.ai, col.nullable, col.pk);
     }
-    printf("%d\n", tab->columnCount);
+    printf("col - number%d\n", tab->columnCount);
 }
 
 void printModel(SqlModel *model)
@@ -124,6 +136,7 @@ void printModel(SqlModel *model)
     for (i = 0; i < model->tableCount; i++)
     {
         SqlTable tab = model->tables[i];
+        printf("table %d\n", i);
         printTable(&tab);
     }
 }
