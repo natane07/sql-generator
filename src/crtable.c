@@ -21,15 +21,15 @@ void createCrTableMenu(HWND hwnd, CrTableControls *crTableMenuControls, SqlRules
     crTableMenuControls->mainControls[11] = CreateWindow("BUTTON", REMOVECOL_MSG, STL_BUTTON, 1310, 560, 150, 24, hwnd, (HMENU)REMOVECOL_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     crTableMenuControls->mainControls[12] = CreateWindow("BUTTON", REMOVEFK_MSG, STL_BUTTON, 1310, 590, 150, 24, hwnd, (HMENU)REMOVEFK_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     crTableMenuControls->currentTableNumber = 0;
-    addColumn(hwnd, crTableMenuControls, SET_MENU, rules);
+    addColumn(hwnd, crTableMenuControls, SET_MENU, rules, model);
     setModel(model);
-    SqlTable current = saveTable(hwnd, crTableMenuControls, rules);
+    SqlTable current = saveTable(hwnd, crTableMenuControls, rules, model);
     updateModel(model, &current, crTableMenuControls->currentTableNumber);
     destroyTable(&current);
     updateTableList(hwnd, model);
 }
 
-void addColumn(HWND hwnd, CrTableControls *crTableMenuControls, int mode, SqlRules *rules)
+void addColumn(HWND hwnd, CrTableControls *crTableMenuControls, int mode, SqlRules *rules, SqlModel *model)
 {
     if (mode == SET_MENU)
     {
@@ -61,8 +61,10 @@ void addColumn(HWND hwnd, CrTableControls *crTableMenuControls, int mode, SqlRul
         int index = crTableMenuControls->fkNumber * CTRL_PER_FK;
         int fkNumber = crTableMenuControls->fkNumber;
         crTableMenuControls->fk[index] = CreateWindow("COMBOBOX", COLUMNEDIT_MSG, STL_COMBO, 1145, 75 + (COLUMN_SPACE_PX * fkNumber), 100, 100, hwnd, (HMENU)FK_FIRST_ASSIGNABLE_ID + index, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
-        crTableMenuControls->fk[index + 1] = CreateWindow("COMBOBOX", COLUMNEDIT_MSG, STL_COMBO, 1255, 75 + (COLUMN_SPACE_PX * fkNumber), 100, 100, hwnd, (HMENU)FK_FIRST_ASSIGNABLE_ID + index + 1, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
-        crTableMenuControls->fk[index + 2] = CreateWindow("COMBOBOX", COLUMNEDIT_MSG, STL_COMBO, 1365, 75 + (COLUMN_SPACE_PX * fkNumber), 100, 100, hwnd, (HMENU)FK_FIRST_ASSIGNABLE_ID + index + 2, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        crTableMenuControls->fk[index + 1] = CreateWindow("COMBOBOX", COLUMNEDIT_MSG, STL_COMBO, 1255, 75 + (COLUMN_SPACE_PX * fkNumber), 100, 100, hwnd, (HMENU)FK_CMB_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        crTableMenuControls->fk[index + 2] = CreateWindow("COMBOBOX", COLUMNEDIT_MSG, STL_COMBO, 1365, 75 + (COLUMN_SPACE_PX * fkNumber), 100, 100, hwnd, (HMENU)FK_FIRST_ASSIGNABLE_ID + index + 1, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        fillColumnCombo(crTableMenuControls->fk[index], model, crTableMenuControls->currentTableNumber);
+        fillTableCombo(crTableMenuControls->fk[index + 1], model);
         crTableMenuControls->fkNumber++;
     }
 }
@@ -154,6 +156,50 @@ void updateTableList(HWND hwnd, SqlModel *model)
     }
 }
 
+void fillColumnCombo(HWND combo, SqlModel *model, int currentTable)
+{
+    int i;
+    SqlTable table = model->tables[currentTable];
+    destroyComboContent(combo);
+    for (i = 0; i < table.columnCount; i++)
+    {
+        addStringToComboDir(combo, table.columns[i].name);
+    }
+}
+
+void fillTableCombo(HWND combo, SqlModel *model)
+{
+    int i;
+    destroyComboContent(combo);
+    for (i = 0; i < model->tableCount; i++)
+    {
+        addStringToComboDir(combo, model->tables[i].name);
+    }
+}
+
+void fillPColumnCombo(CrTableControls *controls, SqlModel *model)
+{
+    int i, j, index, sindex;
+    HWND tabHwnd, colHwnd;
+    for (i = 0; i < controls->fkNumber; i++)
+    {
+        tabHwnd = controls->fk[i * CTRL_PER_FK + FK_PTAB_INDEX];
+        colHwnd = controls->fk[i * CTRL_PER_FK + FK_PCOL_INDEX];
+        index = getComboCursorDir(tabHwnd);
+        if (index != CB_ERR)
+        {
+            sindex = getComboCursorDir(colHwnd);
+            destroyComboContent(colHwnd);
+            for (j = 0; j < model->tables[index].columnCount; j++)
+            {
+                addStringToComboDir(colHwnd, model->tables[index].columns[j].name);
+            }
+            if (sindex != CB_ERR && sindex <= j)
+                setComboCursorDir(colHwnd, sindex);
+        }
+    }
+}
+
 void clearTableList(HWND hwnd)
 {
     clearListBox(hwnd, TABLIST_ID);
@@ -210,17 +256,26 @@ int checkTable(SqlModel *model, SqlTable *table, int currentTableIndex, SqlRules
             return 0;
         }
     }
+    for (i = 0; i < table->relationCount; i++)
+    {
+        if (strlen(table->relations[i].columnName) == 0 || strlen(table->relations[i].pointedColumnName) == 0 || strlen(table->relations[i].pointedTableName) == 0)
+        {
+            printError(CRTAB_ERR_FK_EMPTY_FIELD);
+            return 0;
+        }
+    }
     destroyList(tabNames);
     destroyList(cols);
     return 1;
 }
 
-SqlTable saveTable(HWND hwnd, CrTableControls *controls, SqlRules *rules)
+SqlTable saveTable(HWND hwnd, CrTableControls *controls, SqlRules *rules, SqlModel *model)
 {
     int i;
     SqlTable table;
     char tName[SQL_TABLE_NAME_MAX_LENGTH];
     int ctrlPerCol = CTRL_PER_FULL_COL;
+    int ctrlPerFk = CTRL_PER_FK;
     getTableName(hwnd, tName);
     setTable(&table, tName);
     table.columnCount = controls->colNumber;
@@ -245,6 +300,15 @@ SqlTable saveTable(HWND hwnd, CrTableControls *controls, SqlRules *rules)
     }
     addColumns(&table, cols, table.columnCount);
     free(cols);
+    SqlForeignKey *fks = malloc(sizeof(SqlForeignKey) * controls->fkNumber);
+    for (i = 0; i < controls->fkNumber; i++)
+    {
+        getCurrentStringFromComboDir(controls->fk[i * ctrlPerFk + FK_COL_INDEX], fks[i].columnName);
+        getCurrentStringFromComboDir(controls->fk[i * ctrlPerFk + FK_PTAB_INDEX], fks[i].pointedTableName);
+        getCurrentStringFromComboDir(controls->fk[i * ctrlPerFk + FK_PCOL_INDEX], fks[i].pointedColumnName);
+    }
+    addRelations(&table, fks, controls->fkNumber);
+    free(fks);
     return table;
 }
 
@@ -274,6 +338,7 @@ void updateModel(SqlModel *model, SqlTable *table, int tablePos)
             {
                 setTable(temp + counter, model->tables[i].name);
                 addColumns(temp + counter, model->tables[i].columns, model->tables[i].columnCount);
+                addRelations(temp + counter, model->tables[i].relations, model->tables[i].relationCount);
                 counter++;
             }
         }
@@ -288,9 +353,11 @@ void updateModel(SqlModel *model, SqlTable *table, int tablePos)
         {
             setTable(temp + i, model->tables[i].name);
             addColumns(temp + i, model->tables[i].columns, model->tables[i].columnCount);
+            addRelations(temp + i, model->tables[i].relations, model->tables[i].relationCount);
         }
         setTable(temp + tablePos, table->name);
         addColumns(temp + tablePos, table->columns, table->columnCount);
+        addRelations(temp + tablePos, table->relations, table->relationCount);
         destroyModel(model);
         addTables(model, temp, tablePos + 1);
         free(temp);
@@ -300,6 +367,7 @@ void updateModel(SqlModel *model, SqlTable *table, int tablePos)
         destroyTable(model->tables + tablePos);
         setTable(model->tables + tablePos, table->name);
         addColumns(model->tables + tablePos, table->columns, table->columnCount);
+        addRelations(model->tables + tablePos, table->relations, table->relationCount);
     }
 }
 
@@ -307,18 +375,22 @@ void loadFallbackTable(SqlModel *model, HWND hwnd, CrTableControls *controls, Sq
 {
     if (model->tableCount > 0)
     {
-        loadTable(model->tables, hwnd, controls, rules);
+        loadTable(model->tables, hwnd, controls, rules, model);
     }
     else
     {
-        
+        SqlTable table = getDefaultTable(0);
+        loadTable(&table, hwnd, controls, rules, model);
+        updateModel(model, &table, 0);
+        destroyTable(&table);
     }
 }
 
-void loadTable(SqlTable *table, HWND hwnd, CrTableControls *controls, SqlRules *rules)
+void loadTable(SqlTable *table, HWND hwnd, CrTableControls *controls, SqlRules *rules, SqlModel *model)
 {
-    int i, index;
+    int i, j, index;
     int ctrlPerCol = CTRL_PER_FULL_COL;
+    int ctrlPerFk = CTRL_PER_FK;
     char digit[MAX_DIGIT_LENGTH];
     destroyMenu(controls->columns, CRTABLE_WIN_COL_CTRL_NUM);
     destroyMenu(controls->fk, CRTABLE_WIN_FK_CTRL_NUM);
@@ -327,7 +399,7 @@ void loadTable(SqlTable *table, HWND hwnd, CrTableControls *controls, SqlRules *
     setTableName(hwnd, table->name);
     for (i = 0; i < table->columnCount; i++)
     {
-        addColumn(hwnd, controls, COL_ADD, rules);
+        addColumn(hwnd, controls, COL_ADD, rules, model);
         sendWinTextDir(controls->columns[i * ctrlPerCol + COL_TITLE_INDEX], table->columns[i].name);
         index = findStringIndexInComboDir(controls->columns[i * ctrlPerCol + COL_TYPE_COMBO_INDEX], table->columns[i].type);
         if (index == CB_ERR)
@@ -342,6 +414,25 @@ void loadTable(SqlTable *table, HWND hwnd, CrTableControls *controls, SqlRules *
         setRadioState(controls->columns[i * ctrlPerCol + COL_PK_INDEX], table->columns[i].pk);
         setRadioState(controls->columns[i * ctrlPerCol + COL_NULL_INDEX], table->columns[i].nullable);
     }
+    for (i = 0; i < table->relationCount; i++)
+    {
+        addColumn(hwnd, controls, FK_ADD, rules, model);
+        index = findStringIndexInComboDir(controls->fk[i * ctrlPerFk + FK_COL_INDEX], table->relations[i].columnName);
+        if (index != CB_ERR)
+            setComboCursorDir(controls->fk[i * ctrlPerFk + FK_COL_INDEX], index);
+        index = findStringIndexInComboDir(controls->fk[i * ctrlPerFk + FK_PTAB_INDEX], table->relations[i].pointedTableName);
+        if (index != CB_ERR)
+        {
+            setComboCursorDir(controls->fk[i * ctrlPerFk + FK_PTAB_INDEX], index);
+            for (j = 0; j < model->tables[index].columnCount; j++)
+            {
+                addStringToComboDir(controls->fk[i * ctrlPerFk + FK_PCOL_INDEX], model->tables[index].columns[j].name);
+            }
+            index = findStringIndexInComboDir(controls->fk[i * ctrlPerFk + FK_PCOL_INDEX], table->relations[i].pointedColumnName);
+            if (index != CB_ERR)
+                setComboCursorDir(controls->fk[i * ctrlPerFk + FK_PCOL_INDEX], index);
+        }
+    }
     checkTypeReqNum(controls, rules);
     checkPkNonVacuity(controls);
 }
@@ -349,6 +440,11 @@ void loadTable(SqlTable *table, HWND hwnd, CrTableControls *controls, SqlRules *
 void getTableName(HWND hwnd, char *buffer)
 {
     getStringFromWin(hwnd, TITLEDIT_ID, buffer, SQL_TABLE_NAME_MAX_LENGTH);
+}
+
+int getTableListCursor(HWND hwnd)
+{
+    return getListCursor(hwnd, TABLIST_ID);
 }
 
 void setTableName(HWND hwnd, char *buffer)

@@ -127,6 +127,11 @@ int getComboCursorDir(HWND combo)
     return SendMessage(combo, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
 }
 
+void destroyComboContent(HWND combo)
+{
+    SendMessage(combo, CB_RESETCONTENT, (WPARAM)0, (LPARAM)0);
+}
+
 void sendWinText(HWND hwnd, int controlId, char *text)
 {
     SendDlgItemMessage(hwnd, controlId, WM_SETTEXT, (WPARAM)0, (LPARAM)text);
@@ -215,6 +220,11 @@ void enableEdit(HWND edit)
 void disableEdit(HWND edit)
 {
     SendMessage(edit, EM_SETREADONLY, (WPARAM)TRUE, (LPARAM)0);
+}
+
+int getListCursor(HWND hwnd, int controlId)
+{
+    return SendDlgItemMessage(hwnd, controlId, LB_GETCARETINDEX, (WPARAM)0, (LPARAM)0);
 }
 
 void createClass(WNDCLASSEX *wc, HINSTANCE hInstance, const char *className, LRESULT(CALLBACK *wndProc)(HWND, UINT, WPARAM, LPARAM))

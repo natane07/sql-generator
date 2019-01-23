@@ -131,39 +131,71 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             checkPkNonVacuity(&crTableMenuControls);
             break;
         case ADDCOLUMN_ID:
-            addColumn(hwnd, &crTableMenuControls, COL_ADD, &appData.rules);
+            addColumn(hwnd, &crTableMenuControls, COL_ADD, &appData.rules, &appData.model);
             break;
         case ADDFK_ID:
-            addColumn(hwnd, &crTableMenuControls, FK_ADD, &appData.rules);
+            addColumn(hwnd, &crTableMenuControls, FK_ADD, &appData.rules, &appData.model);
             break;
         case ADDTABLE_ID:
         {
-            SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules);
+            SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules, &appData.model);
             if (checkTable(&appData.model, &table, crTableMenuControls.currentTableNumber, &appData.rules))
             {
                 updateModel(&appData.model, &table, crTableMenuControls.currentTableNumber);
                 crTableMenuControls.currentTableNumber = appData.model.tableCount;
                 SqlTable defTab = getDefaultTable(appData.model.tableCount);
-                loadTable(&defTab, hwnd, &crTableMenuControls, &appData.rules);
+                loadTable(&defTab, hwnd, &crTableMenuControls, &appData.rules, &appData.model);
                 updateModel(&appData.model, &defTab, crTableMenuControls.currentTableNumber);
                 updateTableList(hwnd, &appData.model);
                 destroyTable(&defTab);
             }
             destroyTable(&table);
-            printModel(&appData.model);
         }
         break;
         case SAVETABLE_ID:
         {
-            SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules);
+            SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules, &appData.model);
             if (checkTable(&appData.model, &table, crTableMenuControls.currentTableNumber, &appData.rules))
             {
                 updateModel(&appData.model, &table, crTableMenuControls.currentTableNumber);
                 updateTableList(hwnd, &appData.model);
+                loadTable(&table, hwnd, &crTableMenuControls, &appData.rules, &appData.model);
             }
             destroyTable(&table);
         }
         break;
+        case DELTABLE_ID:
+            updateModel(&appData.model, NULL, crTableMenuControls.currentTableNumber);
+            crTableMenuControls.currentTableNumber = 0;
+            loadFallbackTable(&appData.model, hwnd, &crTableMenuControls, &appData.rules);
+            updateTableList(hwnd, &appData.model);
+            break;
+        case TABLIST_ID:
+        {
+            if (HIWORD(wParam) == LBN_SELCHANGE)
+            {
+                SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules, &appData.model);
+                if (checkTable(&appData.model, &table, crTableMenuControls.currentTableNumber, &appData.rules))
+                {
+                    updateModel(&appData.model, &table, crTableMenuControls.currentTableNumber);
+                    int index = getTableListCursor(hwnd);
+                    if (index >= 0 && index < appData.model.tableCount)
+                    {
+                        crTableMenuControls.currentTableNumber = index;
+                        loadTable(appData.model.tables + index, hwnd, &crTableMenuControls, &appData.rules, &appData.model);
+                    }
+                    updateTableList(hwnd, &appData.model);
+                }
+                destroyTable(&table);
+            }
+        }
+        break;
+        case FK_CMB_ID:
+            if (HIWORD(wParam) == CBN_SELCHANGE)
+            {
+                fillPColumnCombo(&crTableMenuControls, &appData.model);
+            }
+            break;
         case REMOVEFK_ID:
             removeColumn(hwnd, &crTableMenuControls, FK_DEL, &appData.rules);
             break;

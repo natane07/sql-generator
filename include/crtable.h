@@ -20,6 +20,9 @@
 #define COL_AI_INDEX 3
 #define COL_NULL_INDEX 4
 #define COL_PK_INDEX 5
+#define FK_COL_INDEX 0
+#define FK_PTAB_INDEX 1
+#define FK_PCOL_INDEX 2
 
 //controls
 #define LITABHINT_ID 10
@@ -60,6 +63,7 @@
 #define FK_FIRST_ASSIGNABLE_ID 300
 #define RADIO_BTN_ID 1100
 #define COMBOS_ID 1101
+#define FK_CMB_ID 1102
 
 //column type for addColumn and removeColumn function
 #define FK_ADD 0
@@ -76,6 +80,7 @@
 #define CRTAB_ERR_COL_NAME_LENGTH "Column name too short or too long!"
 #define CRTAB_ERR_COL_NAME_EXISTS "Column name already exists in table!"
 #define CRTAB_ERR_COL_LENGTH "Type requiring length must have valid integer!"
+#define CRTAB_ERR_FK_EMPTY_FIELD "Foreign Key must be composed of valid elements!"
 
 typedef struct CrTableControls CrTableControls;
 struct CrTableControls
@@ -89,21 +94,25 @@ struct CrTableControls
 };
 
 void createCrTableMenu(HWND, CrTableControls *, SqlRules *, SqlModel *);
-void addColumn(HWND, CrTableControls *, int, SqlRules *);
+void addColumn(HWND, CrTableControls *, int, SqlRules *, SqlModel *);
 void removeColumn(HWND, CrTableControls *, int, SqlRules *);
 void getTableName(HWND, char *);
 void updateTableList(HWND, SqlModel *);
+void fillColumnCombo(HWND, SqlModel *, int);
+void fillTableCombo(HWND, SqlModel *);
+void fillPColumnCombo(CrTableControls *controls, SqlModel * model);
 void clearTableList(HWND);
 int checkTable(SqlModel *, SqlTable *, int, SqlRules *);
-SqlTable saveTable(HWND, CrTableControls *, SqlRules *);
+SqlTable saveTable(HWND, CrTableControls *, SqlRules *, SqlModel *);
 SqlTable getDefaultTable(int);
 void updateModel(SqlModel *, SqlTable *, int);
 void loadFallbackTable(SqlModel *, HWND, CrTableControls *, SqlRules *);
-void loadTable(SqlTable *, HWND, CrTableControls *, SqlRules *);
+void loadTable(SqlTable *, HWND, CrTableControls *, SqlRules *, SqlModel *);
 void addTypes(HWND, SqlRules *);
 void checkTypeReqNum(CrTableControls *, SqlRules *);
 void checkPkNonVacuity(CrTableControls *);
 void setTableName(HWND, char *);
+int getTableListCursor(HWND);
 void addTableToList(HWND, char *);
 void destroyCrTableMenu(CrTableControls *);
 

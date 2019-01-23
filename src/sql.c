@@ -125,9 +125,15 @@ void printTable(SqlTable *tab)
     for (i = 0; i < tab->columnCount; i++)
     {
         SqlColumn col = tab->columns[i];
-        printf("col - name %s - type %s - size %d - ai %d - null %d - pk %d\n", col.name, col.type, col.size, col.ai, col.nullable, col.pk);
+        printf("col name %s type %s size %d ai %d null %d pk %d\n", col.name, col.type, col.size, col.ai, col.nullable, col.pk);
     }
     printf("col - number%d\n", tab->columnCount);
+    for (i = 0; i < tab->relationCount; i++)
+    {
+        SqlForeignKey fk = tab->relations[i];
+        printf("fk col %s references %s(%s)\n", fk.columnName, fk.pointedTableName, fk.pointedColumnName);
+    }
+    printf("fk - number %d\n", tab->relationCount);
 }
 
 void printModel(SqlModel *model)
