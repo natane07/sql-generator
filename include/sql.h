@@ -86,6 +86,7 @@ struct SqlRules
     int maxFk;
     List *types;
     List *numReqTypes;
+    List *subTypes;
 };
 
 void getTestModel(SqlModel *);

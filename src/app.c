@@ -31,7 +31,7 @@ void setAppData(AppData *appData)
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     static HWND mainMenuControls[MAIN_WIN_CTRL_NUM];
-    static HWND insDataControls[INSDATA_WIN_CTRL_NUM];
+    static InsDataControls insDataControls;
     static CrTableControls crTableMenuControls;
     static int currentMenu = MAIN;
     static HMENU hMenu;
@@ -62,7 +62,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 destroyModel(&appData.model);
                 break;
             case INSDATA:
-                destroyInsDataMenu(insDataControls);
+                destroyInsDataMenu(&insDataControls);
                 break;
             }
             createMainMenu(hwnd, mainMenuControls);
@@ -98,7 +98,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 if (ok)
                 {
                     destroyMainMenu(mainMenuControls);
-                    createInsDataMenu(hwnd, insDataControls);
+                    createInsDataMenu(hwnd, &insDataControls, &appData.rules);
                     EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
                 }
                 else
@@ -205,6 +205,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case EXPORTMODEL_ID:
             exportModel(hwnd, &appData.model);
             break;
+        case INS_ADDCOLUMN_ID:
+            addInsertColumn(hwnd, &insDataControls, &appData.rules);
+            break;
+        case INS_REMOVECOL_ID:
+            removeInsertColumn(&insDataControls);
+            break;
         default:
             break;
         }
@@ -254,6 +260,7 @@ void destroy(AppData *appData)
     destroyList(appData->settings);
     destroyList(appData->rules.types);
     destroyList(appData->rules.numReqTypes);
+    destroyList(appData->rules.subTypes);
     free(appData->version);
     free(appData->pName);
 }

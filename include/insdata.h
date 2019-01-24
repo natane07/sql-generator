@@ -2,11 +2,54 @@
 
 #define INSDATA_H
 
-#define INSDATA_WIN_CTRL_NUM 10
-
 #include <windows.h>
+#include "sql.h"
 
-void createInsDataMenu(HWND, HWND *);
-void destroyInsDataMenu(HWND *);
+//controls
+#define INSDATA_WIN_CTRL_NUM 9
+#define INS_TAB_NAME_ID 400
+#define INS_TAB_NAME_MSG ""
+#define INS_TITLEHINT_ID 401
+#define INS_TITLEHINT_MSG "Enter Table Name:"
+#define INS_ADDCOLUMN_ID 402
+#define INS_ADDCOLUMN_MSG "+ Column"
+#define INS_REMOVECOL_ID 403
+#define INS_REMOVECOL_MSG "- Column"
+#define INS_EXPORTMODEL_ID 404
+#define INS_EXPORTMODEL_MSG "Export Data"
+#define INS_TITLECOLUMN_ID 405
+#define INS_TITLECOLUMN_MSG "Column"
+#define INS_TITLELENGTH_ID 406
+#define INS_TITLELENGTH_MSG "Length"
+#define INS_LENGTH_ID 407
+#define INS_LENGTH_MSG ""
+#define INS_TABEDHINT_ID 408
+#define INS_TABEDHINT_MSG "Generate Data"
+
+//available range for additional controls
+#define INS_COLUMN_NAME_ID 1300
+#define INS_COLUMN_NAME_MSG ""
+#define INS_COLUMNEDIT_ID 1301
+#define INS_COLUMNEDIT_MSG ""
+#define INS_TITLETYPE_ID 1302
+#define INS_TITLETYPE_MSG "Type"
+
+#define INS_MAX_ADD_CTRL_NUM 99
+#define INS_COL_CTRL_NUM 3
+#define INS_COL_SPACE 30
+
+struct InsDataControls
+{
+    HWND staticControls[INSDATA_WIN_CTRL_NUM];
+    HWND colControls[INS_MAX_ADD_CTRL_NUM];
+    int colNum;
+};
+typedef struct InsDataControls InsDataControls;
+
+void createInsDataMenu(HWND, InsDataControls *, SqlRules *);
+void destroyInsDataMenu(InsDataControls *);
+void addInsertColumn(HWND, InsDataControls *, SqlRules *);
+void removeInsertColumn(InsDataControls *);
+void getSubtypes(SqlRules *);
 
 #endif

@@ -5,6 +5,7 @@
 #include "..\include\crtable.h"
 #include "..\include\parser.h"
 #include "..\include\sql.h"
+#include "..\include\insdata.h"
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,6 +25,7 @@ void initFs(AppData *appData)
     initConfigFile(path, appData->settings);
     initProfilesFile(path, appData);
     initTypesFile(path, appData);
+    getSubtypes(appData->rules.subTypes);
     applySettings(appData->settings, appData);
 }
 
