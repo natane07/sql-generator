@@ -202,6 +202,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case REMOVECOL_ID:
             removeColumn(hwnd, &crTableMenuControls, COL_DEL, &appData.rules);
             break;
+        case EXPORTMODEL_ID:
+            exportModel(hwnd, &appData.model);
+            break;
         default:
             break;
         }

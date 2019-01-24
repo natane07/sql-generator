@@ -115,5 +115,7 @@ void setTableName(HWND, char *);
 int getTableListCursor(HWND);
 void addTableToList(HWND, char *);
 void destroyCrTableMenu(CrTableControls *);
+void exportModel(HWND, SqlModel *);
+void setOfn(HWND, OPENFILENAME *, char *);
 
 #endif

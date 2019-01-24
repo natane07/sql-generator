@@ -147,9 +147,9 @@ void printModel(SqlModel *model)
     }
 }
 
-void generateScript(SqlModel *model)
+void generateScript(SqlModel *model, FILE *fp)
 {
-    writeCrTablesToFile(model);
+    writeCrTablesToFile(model, fp);
 }
 
 void destroyModel(SqlModel *model)
@@ -163,35 +163,30 @@ void destroyModel(SqlModel *model)
     free(model->tables);
 }
 
-void writeCrTablesToFile(SqlModel *model)
+void writeCrTablesToFile(SqlModel *model, FILE *fp)
 {
     int i, j;
-    FILE *fp = fopen("test.sql", "w");
-    if (fp != NULL)
+    for (i = 0; i < model->tableCount; i++)
     {
-        for (i = 0; i < model->tableCount; i++)
+        char query[SQL_QUERY_MAX_LENGTH];
+        char buffer[SQL_COLUMN_MAX_LENGTH];
+        query[0] = '\0';
+        SqlTable tab = model->tables[i];
+        for (j = 0; j < tab.columnCount; j++)
         {
-            char query[SQL_QUERY_MAX_LENGTH];
-            char buffer[SQL_COLUMN_MAX_LENGTH];
-            query[0] = '\0';
-            SqlTable tab = model->tables[i];
-            for (j = 0; j < tab.columnCount; j++)
-            {
-                SqlColumn col = tab.columns[j];
-                writeColumn(buffer, &col);
-                strcat(query, buffer);
-            }
-            addPrimaryKey(buffer, &tab);
+            SqlColumn col = tab.columns[j];
+            writeColumn(buffer, &col);
             strcat(query, buffer);
-            for (j = 0; j < tab.relationCount; j++)
-            {
-                SqlForeignKey fk = tab.relations[j];
-                addForeignKey(buffer, &fk);
-                strcat(query, buffer);
-            }
-            fprintf(fp, "%s %s(%s);\n", SQL_CRTAB, tab.name, query);
         }
-        fclose(fp);
+        addPrimaryKey(buffer, &tab);
+        strcat(query, buffer);
+        for (j = 0; j < tab.relationCount; j++)
+        {
+            SqlForeignKey fk = tab.relations[j];
+            addForeignKey(buffer, &fk);
+            strcat(query, buffer);
+        }
+        fprintf(fp, "%s %s(%s);\n", SQL_CRTAB, tab.name, query);
     }
 }
 
