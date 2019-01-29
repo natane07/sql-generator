@@ -25,7 +25,7 @@ void initFs(AppData *appData)
     initConfigFile(path, appData->settings);
     initProfilesFile(path, appData);
     initTypesFile(path, appData);
-    getSubtypes(appData->rules.subTypes);
+    getSubtypes(&appData->rules);
     applySettings(appData->settings, appData);
 }
 

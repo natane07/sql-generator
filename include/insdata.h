@@ -51,5 +51,6 @@ void destroyInsDataMenu(InsDataControls *);
 void addInsertColumn(HWND, InsDataControls *, SqlRules *);
 void removeInsertColumn(InsDataControls *);
 void getSubtypes(SqlRules *);
+void addSubTypes(List *, HWND);
 
 #endif

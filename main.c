@@ -2,12 +2,14 @@
 #include ".\include\utils.h"
 #include <windows.h>
 #include <string.h>
+#include <time.h>
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     WNDCLASSEX wc;
     HWND hwnd;
     MSG Msg;
+    srand(time(NULL));
 
     createClass(&wc, hInstance, MAINWIN_CLASS, WndProc);
     if (!RegisterClassEx(&wc))

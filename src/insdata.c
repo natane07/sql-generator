@@ -36,6 +36,7 @@ void addInsertColumn(HWND hwnd, InsDataControls *controls, SqlRules *rules)
         controls->colControls[index] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", INS_COLUMN_NAME_MSG, STL_EDIT, 650, 98 + space, 150, 24, hwnd, (HMENU)INS_COLUMN_NAME_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
         controls->colControls[index + 1] = CreateWindow("COMBOBOX", INS_COLUMNEDIT_MSG, STL_COMBO, 850, 98 + space, 150, 100, hwnd, (HMENU)INS_COLUMNEDIT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
         controls->colControls[index + 2] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", INS_LENGTH_MSG, STL_EDIT, 1050, 98 + space, 100, 24, hwnd, (HMENU)INS_LENGTH_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        addSubTypes(rules->subTypes, controls->colControls[index + 1]);
         controls->colNum++;
     }
 }
@@ -52,8 +53,28 @@ void removeInsertColumn(InsDataControls *controls)
     }
 }
 
-void getSubtypes(SqlRules* rules)
+void getSubtypes(SqlRules *rules)
 {
     rules->subTypes = listInit();
     push(rules->subTypes, SQL_DATA_TYPE_1);
+    push(rules->subTypes, SQL_DATA_TYPE_2);
+    push(rules->subTypes, SQL_DATA_TYPE_3);
+    push(rules->subTypes, SQL_DATA_TYPE_4);
+    push(rules->subTypes, SQL_DATA_TYPE_5);
+    push(rules->subTypes, SQL_DATA_TYPE_6);
+    push(rules->subTypes, SQL_DATA_TYPE_7);
+    push(rules->subTypes, SQL_DATA_TYPE_8);
+    push(rules->subTypes, SQL_DATA_TYPE_9);
+    push(rules->subTypes, SQL_DATA_TYPE_10);
+}
+
+void addSubTypes(List *list, HWND hwnd)
+{
+    Element *current = list->first;
+    while (current != NULL)
+    {
+        addStringToComboDir(hwnd, current->content);
+        current = current->next;
+    }
+    setComboCursorDir(hwnd, 0);
 }

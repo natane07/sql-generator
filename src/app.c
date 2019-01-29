@@ -63,6 +63,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 break;
             case INSDATA:
                 destroyInsDataMenu(&insDataControls);
+                destroyList(&appData.rules.subTypes);
                 break;
             }
             createMainMenu(hwnd, mainMenuControls);
