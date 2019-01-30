@@ -63,7 +63,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 break;
             case INSDATA:
                 destroyInsDataMenu(&insDataControls);
-                destroyList(&appData.rules.subTypes);
+                destroyList(appData.rules.subTypes);
                 break;
             }
             createMainMenu(hwnd, mainMenuControls);
@@ -99,7 +99,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 if (ok)
                 {
                     destroyMainMenu(mainMenuControls);
-                    createInsDataMenu(hwnd, &insDataControls, &appData.rules);
+                    createInsDataMenu(hwnd, &insDataControls, &appData.rules, &appData.query);
                     EnableMenuItem(hMenu, GTMENU_ID, MF_ENABLED);
                 }
                 else

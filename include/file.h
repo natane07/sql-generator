@@ -37,12 +37,16 @@
 #define CONFIG_FILE "sql-generator\\config\\config.ini"
 #define PROFILES_FILE "sql-generator\\config\\profiles.ini"
 #define TYPES_FILE "sql-generator\\config\\types.ini"
+#define CITY_FILE "sql-generator\\config\\cities.txt"
+#define NAME_FILE "sql-generator\\config\\names.txt"
+#define MAIL_FILE "sql-generator\\config\\mails.txt"
 
 void initFs(AppData *);
 void initFolders(char *);
 void initConfigFile(char *, List *);
 void initProfilesFile(char *, AppData *);
 void initTypesFile(char *, AppData *);
+void initDataFiles(char *);
 void getTypes(char *, void *);
 void getNumReqTypes(char *, void *);
 int fileExists(char *, char *);
@@ -50,7 +54,7 @@ FILE *openFile(char *, char *, char *);
 void applySettings(List *, AppData *);
 void applySetting(char *, void *);
 void setDefaultData(AppData *);
-void getFileContent(List *, int, int, FILE *);
+void getFileContent(List *, int, int, FILE *, int);
 void printTypesFile(FILE *);
 void setDefaultTypes(List *);
 void printConfigFile(FILE *);

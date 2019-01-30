@@ -1,11 +1,11 @@
 #include ".\..\include\insdata.h"
 #include ".\..\include\utils.h"
-#include ".\..\include\app.h"
 #include ".\..\include\sql.h"
 #include ".\..\include\sqldata.h"
+#include ".\..\include\styles.h"
 #include <windows.h>
 
-void createInsDataMenu(HWND hwnd, InsDataControls *controls, SqlRules *rules)
+void createInsDataMenu(HWND hwnd, InsDataControls *controls, SqlRules *rules, SqlInsertQuery *query)
 {
     controls->staticControls[0] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", INS_TAB_NAME_MSG, STL_EDIT, 250, 98, 150, 24, hwnd, (HMENU)INS_TAB_NAME_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     controls->staticControls[1] = CreateWindow("STATIC", INS_TITLEHINT_MSG, STL_TEXT, 100, 100, 150, 24, hwnd, (HMENU)INS_TITLEHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
@@ -19,6 +19,7 @@ void createInsDataMenu(HWND hwnd, InsDataControls *controls, SqlRules *rules)
     controls->colNum = 0;
     getSubtypes(rules);
     addInsertColumn(hwnd, controls, rules);
+    setQuery(query);
 }
 
 void destroyInsDataMenu(InsDataControls *controls)

@@ -11,6 +11,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     MSG Msg;
     srand(time(NULL));
 
+    //debug
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);
+
     createClass(&wc, hInstance, MAINWIN_CLASS, WndProc);
     if (!RegisterClassEx(&wc))
     {

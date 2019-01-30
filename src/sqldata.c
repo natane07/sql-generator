@@ -1,5 +1,7 @@
 #include ".\..\include\sqldata.h"
 #include ".\..\include\sql.h"
+#include ".\..\include\file.h"
+#include ".\..\include\list.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,8 +17,34 @@ int generateGender()
     return generateDataInteger(0, 1);
 }
 
-void generateGUID()
+void generateGUID(char *guid)
 {
+    int i, j;
+    char pc[] = "0123456789abcdef";
+    char buffer[30];
+    for (i = 0; i < 8; i++)
+    {
+        buffer[i] = pc[generateDataInteger(0, 15)];
+    }
+    buffer[8] = '\0';
+    strcpy(guid, buffer);
+    for (i = 0; i < 3; i++)
+    {
+        for (j = 0; j < 4; j++)
+        {
+            buffer[j] = pc[generateDataInteger(0, 15)];
+        }
+        buffer[4] = '\0';
+        strcat(guid, "-");
+        strcat(guid, buffer);
+    }
+    for (i = 0; i < 12; i++)
+    {
+        buffer[i] = pc[generateDataInteger(0, 15)];
+    }
+    strcat(guid, "-");
+    buffer[12] = '\0';
+    strcat(guid, buffer);
 }
 
 float generateDataDouble()
@@ -70,68 +98,173 @@ void generateDataText(char *text, int size)
     text[size] = '\0';
 }
 
-void generateCity(char city[])
+void generateCity(char *city)
 {
-    FILE *fichier = NULL;
-    char ville[11][200];
-    fichier = fopen("./ville.txt", "r");
-    if (fichier != NULL)
+    List *cities = listInit();
+    FILE *fp = openFile(getenv(LOCALSTORAGE), CITY_FILE, "r");
+    if (fp != NULL)
     {
-        fscanf(fichier, "%s %s %s %s %s %s %s %s %s %s", ville[1], ville[2], ville[3], ville[4], ville[5], ville[6], ville[7], ville[8], ville[9], ville[10]);
-        fclose(fichier);
+        getFileContent(cities, SQL_DATA_MAX_VALUE_LENGTH, SQL_DATA_MIN_VALUE_LENGTH, fp, 1);
     }
-    int random = rand() % (1 - 11) + 1;
-    strcpy(city, ville[random]);
+    strcpy(city, getElement(cities, generateDataInteger(0, cities->length))->content);
+    destroyList(cities);
 }
 
-void generateName(char name[])
+void generateName(char *name)
 {
-    FILE *fichier = NULL;
-    char tab_name[11][200];
-    fichier = fopen("./name.txt", "r");
-    if (fichier != NULL)
+    List *names = listInit();
+    FILE *fp = openFile(getenv(LOCALSTORAGE), NAME_FILE, "r");
+    if (fp != NULL)
     {
-        fscanf(fichier, "%s %s %s %s %s %s %s %s %s %s", tab_name[1], tab_name[2], tab_name[3], tab_name[4], tab_name[5], tab_name[6], tab_name[7], tab_name[8], tab_name[9], tab_name[10]);
-        fclose(fichier);
+        getFileContent(names, SQL_DATA_MAX_VALUE_LENGTH, SQL_DATA_MIN_VALUE_LENGTH, fp, 1);
     }
-    int random = rand() % (1 - 11) + 1;
-    strcpy(name, tab_name[random]);
+    strcpy(name, getElement(names, generateDataInteger(0, names->length))->content);
+    destroyList(names);
 }
 
-void generateNumberPhone(char *numberPhone)
+void generatePhoneNumber(char *phoneNumber)
 {
     int i;
-    int number[10];
-    char tab_numberPhone[20];
-    strcpy(numberPhone, "0");
-    for (i = 0; i < 9; i++)
+    char pc[] = "0123456789";
+    strcpy(phoneNumber, "0");
+    for (i = 1; i < 10; i++)
     {
-        number[i] = generateDataInteger(0, 9);
-        sprintf(tab_numberPhone, "%d", number[i]);
-        strcat(numberPhone, tab_numberPhone);
+        phoneNumber[i] = pc[generateDataInteger(0, 9)];
     }
+    phoneNumber[10] = '\0';
 }
 
-void generateMail(char mail[])
+void generateMail(char *mail)
 {
-    FILE *fichier = NULL;
-    int random;
-    char name[250];
-    char tab_mail[11][200];
-    fichier = fopen("./mail.txt", "r");
-    if (fichier != NULL)
+    char name[SQL_DATA_MAX_VALUE_LENGTH];
+    List *mails = listInit();
+    FILE *fp = openFile(getenv(LOCALSTORAGE), MAIL_FILE, "r");
+    if (fp != NULL)
     {
-        fscanf(fichier, "%s %s %s %s %s %s %s %s %s %s", tab_mail[1], tab_mail[2], tab_mail[3], tab_mail[4], tab_mail[5], tab_mail[6], tab_mail[7], tab_mail[8], tab_mail[9], tab_mail[10]);
-        fclose(fichier);
+        getFileContent(mails, SQL_DATA_MAX_VALUE_LENGTH, SQL_DATA_MIN_VALUE_LENGTH, fp, 1);
     }
-    random = rand() % (1 - 10) + 1;
     generateName(name);
     strcpy(mail, name);
-    strcat(mail, tab_mail[random]);
+    strcat(mail, getElement(mails, generateDataInteger(0, mails->length))->content);
+    destroyList(mails);
 }
 
-void WriteInsDataToFile()
+void setQuery(SqlInsertQuery *query)
 {
-    char query[SQL_QUERY_MAX_LENGTH];
-    strcpy(query, SQL_DATA_INSERT);
+    query->colNumber = 0;
+}
+
+void WriteInsDataToFile(FILE *fp, SqlInsertQuery *query)
+{
+    int i, j;
+    char queryString[SQL_DATA_MAX_QUERY_LENGTH];
+    char columns[SQL_DATA_MAX_COLS_NAME];
+    char values[SQL_DATA_MAX_COLS_VALUE];
+    for (i = 0; i < 8; i++)
+    {
+        strcpy(queryString, SQL_DATA_INSERT);
+        strcat(queryString, SQL_DATA_SPACE);
+        strcat(queryString, query->tabName);
+        strcpy(columns, "(");
+        strcpy(values, "(");
+        for (j = 0; j < query->colNumber; j++)
+        {
+            processColumn(&query->cols[j]);
+            addColumnName(columns, query->cols[j].colName, j, query->colNumber);
+            addColumnValue(columns, query->cols[j].colName, j, query->colNumber);
+        }
+        strcat(columns, ")");
+        strcat(values, ")");
+        strcat(queryString, columns);
+        strcat(queryString, SQL_DATA_SPACE);
+        strcat(queryString, SQL_DATA_VALUES);
+        strcat(queryString, SQL_DATA_SPACE);
+        strcat(queryString, values);
+        strcat(queryString, SQL_DATA_QUERY_DELIMITER_2);
+        fprintf(fp, "%s\n", queryString);
+    }
+}
+
+void addColumnName(char *columnsName, char *columnName, int index, int colNumber)
+{
+    if (index < colNumber - 1)
+    {
+        strcat(columnsName, columnName);
+        strcat(columnsName, SQL_DATA_QUERY_DELIMITER_1);
+    }
+    else
+    {
+        strcat(columnsName, columnName);
+    }
+}
+
+void addColumnValue(char *columnsValue, char *columnValue, int index, int colNumber)
+{
+    if (index < colNumber - 1)
+    {
+        strcat(columnsValue, columnValue);
+        strcat(columnsValue, SQL_DATA_QUERY_DELIMITER_1);
+    }
+    else
+    {
+        strcat(columnsValue, columnValue);
+    }
+}
+
+void processColumn(SqlData *column)
+{
+    if (strcmp(column->typeName, SQL_DATA_TYPE_1) == 0)
+    {
+        sprintf(column->value, "%d", generateDataInteger(0, 100));
+    }
+    else if (strcmp(column->typeName, SQL_DATA_TYPE_2) == 0)
+    {
+        char buffer[SQL_DATA_MAX_VALUE_LENGTH];
+        generateDataText(buffer, column->colLength);
+        sprintf(column->value, "'%s'", buffer);
+    }
+    else if (strcmp(column->typeName, SQL_DATA_TYPE_3) == 0)
+    {
+        sprintf(column->value, "%f", generateDataDouble());
+    }
+    else if (strcmp(column->typeName, SQL_DATA_TYPE_4) == 0)
+    {
+        char buffer[SQL_DATA_MAX_VALUE_LENGTH];
+        generateDataDate(buffer);
+        sprintf(column->value, "%s('%s', %s)", SQL_DATA_DATE, buffer, SQL_DATA_FORMAT);
+    }
+    else if (strcmp(column->typeName, SQL_DATA_TYPE_5) == 0)
+    {
+        char buffer[SQL_DATA_MAX_VALUE_LENGTH];
+        generateCity(buffer);
+        sprintf(column->value, "'%s'", buffer);
+    }
+    else if (strcmp(column->typeName, SQL_DATA_TYPE_6) == 0)
+    {
+        char buffer[SQL_DATA_MAX_VALUE_LENGTH];
+        generateName(buffer);
+        sprintf(column->value, "'%s'", buffer);
+    }
+    else if (strcmp(column->typeName, SQL_DATA_TYPE_7) == 0)
+    {
+        sprintf(column->value, "%d", generateGender());
+    }
+    else if (strcmp(column->typeName, SQL_DATA_TYPE_8) == 0)
+    {
+        char buffer[SQL_DATA_MAX_VALUE_LENGTH];
+        generatePhoneNumber(buffer);
+        sprintf(column->value, "'%s'", buffer);
+    }
+    else if (strcmp(column->typeName, SQL_DATA_TYPE_9) == 0)
+    {
+        char buffer[SQL_DATA_MAX_VALUE_LENGTH];
+        generateMail(buffer);
+        sprintf(column->value, "'%s'", buffer);
+    }
+    else if (strcmp(column->typeName, SQL_DATA_TYPE_10) == 0)
+    {
+        char buffer[SQL_DATA_MAX_VALUE_LENGTH];
+        generateGUID(buffer);
+        sprintf(column->value, "'%s'", buffer);
+    }
 }

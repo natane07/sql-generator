@@ -1,6 +1,6 @@
 #include <windows.h>
 #include ".\..\include\menu.h"
-#include ".\..\include\app.h"
+#include ".\..\include\styles.h"
 #include ".\..\include\file.h"
 #include ".\..\include\utils.h"
 #include ".\..\include\parser.h"

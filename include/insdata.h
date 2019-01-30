@@ -4,6 +4,7 @@
 
 #include <windows.h>
 #include "sql.h"
+#include "sqldata.h"
 
 //controls
 #define INSDATA_WIN_CTRL_NUM 9
@@ -46,7 +47,7 @@ struct InsDataControls
 };
 typedef struct InsDataControls InsDataControls;
 
-void createInsDataMenu(HWND, InsDataControls *, SqlRules *);
+void createInsDataMenu(HWND, InsDataControls *, SqlRules *, SqlInsertQuery *);
 void destroyInsDataMenu(InsDataControls *);
 void addInsertColumn(HWND, InsDataControls *, SqlRules *);
 void removeInsertColumn(InsDataControls *);

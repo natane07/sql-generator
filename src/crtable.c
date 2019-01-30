@@ -1,5 +1,5 @@
 #include ".\..\include\crtable.h"
-#include ".\..\include\app.h"
+#include ".\..\include\styles.h"
 #include ".\..\include\utils.h"
 #include ".\..\include\sql.h"
 #include ".\..\include\file.h"
@@ -469,7 +469,7 @@ void exportModel(HWND hwnd, SqlModel *model)
     OPENFILENAME ofn;
     char file[MAX_PATH_LENGTH];
     setOfn(hwnd, &ofn, file);
-    if (GetSaveFileNameA(&ofn))
+    if (GetSaveFileName(&ofn))
     {
         FILE *fp = fopen(file, "w");
         if (fp != NULL)

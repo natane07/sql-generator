@@ -5,6 +5,7 @@
 #include "list.h"
 #include "sql.h"
 #include "crtable.h"
+#include "sqldata.h"
 #include <windows.h>
 
 //app
@@ -31,16 +32,6 @@
 #define OK_PROFILE_CR "created successfully!"
 #define OK_PROFILE_LD "loaded successfully!"
 
-//styles
-#define STL_BUTTON (WS_VISIBLE | WS_CHILD | BS_MULTILINE)
-#define STL_COMBO (WS_VISIBLE | WS_CHILD | WS_VSCROLL | CBS_DROPDOWNLIST)
-#define STL_TEXT (WS_VISIBLE | WS_CHILD)
-#define STL_TEXT_RIGHT (WS_VISIBLE | WS_CHILD | SS_RIGHT)
-#define STL_TEXT_CENTER (WS_VISIBLE | WS_CHILD | SS_CENTER)
-#define STL_EDIT (WS_VISIBLE | WS_CHILD | WS_BORDER)
-#define STL_LIST (WS_VISIBLE | WS_CHILD | LBS_NOTIFY)
-#define STL_RADIO (WS_VISIBLE | WS_CHILD | BS_RADIOBUTTON)
-
 //check profile name function modes
 #define CREATE 0
 #define LOAD 1
@@ -54,6 +45,7 @@ struct AppData
     List *settings;
     SqlModel model;
     SqlRules rules;
+    SqlInsertQuery query;
 };
 
 void initAppdata(AppData *);

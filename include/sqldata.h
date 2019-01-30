@@ -1,3 +1,7 @@
+#ifndef SQLDATA_H
+
+#define SQLDATA_H
+
 #include "list.h"
 
 //default sql types
@@ -24,7 +28,11 @@
 #define SQL_DATA_MAX_TAB_NAME 30
 #define SQL_DATA_MAX_TYPE_NAME 30
 #define SQL_DATA_MAX_COL_NUM 15
-#define SQL_DATA_MAX_VALUE_LENGTH 256
+#define SQL_DATA_MAX_VALUE_LENGTH 259
+#define SQL_DATA_MIN_VALUE_LENGTH 2
+#define SQL_DATA_MAX_COLS_NAME (SQL_DATA_MAX_COL_NAME * SQL_DATA_MAX_COL_NUM)
+#define SQL_DATA_MAX_COLS_VALUE (SQL_DATA_MAX_VALUE_LENGTH * SQL_DATA_MAX_COL_NUM)
+#define SQL_DATA_MAX_QUERY_LENGTH 6144
 
 struct SqlData
 {
@@ -42,7 +50,20 @@ struct SqlInsertQuery
 };
 typedef struct SqlInsertQuery SqlInsertQuery;
 
-void generateDataText(char *, int);
 int generateDataInteger(int, int);
+int generateGender();
+void generateGUID(char *);
 float generateDataDouble();
 void generateDataDate(char *);
+void generateDataText(char *, int);
+void generateCity(char *);
+void generateName(char *);
+void generatePhoneNumber(char *);
+void generateMail(char *);
+void setQuery(SqlInsertQuery *);
+void WriteInsDataToFile(FILE *, SqlInsertQuery *);
+void addColumnName(char *, char *, int, int);
+void addColumnValue(char *, char *, int, int);
+void processColumn(SqlData *);
+
+#endif

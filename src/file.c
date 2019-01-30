@@ -25,6 +25,7 @@ void initFs(AppData *appData)
     initConfigFile(path, appData->settings);
     initProfilesFile(path, appData);
     initTypesFile(path, appData);
+    initDataFiles(path);
     getSubtypes(&appData->rules);
     applySettings(appData->settings, appData);
 }
@@ -48,7 +49,7 @@ void initConfigFile(char *path, List *settings)
         config = openFile(path, CONFIG_FILE, "r");
         if (config != NULL)
         {
-            getFileContent(settings, MAX_SETTING_LENGTH, MIN_SETTING_LENGTH, config);
+            getFileContent(settings, MAX_SETTING_LENGTH, MIN_SETTING_LENGTH, config, 0);
         }
     }
     else
@@ -69,7 +70,7 @@ void initProfilesFile(char *path, AppData *appData)
         profiles = openFile(path, PROFILES_FILE, "r");
         if (profiles != NULL)
         {
-            getFileContent(appData->existingProfiles, MAX_NAME_LENGTH, MIN_NAME_LENGTH, profiles);
+            getFileContent(appData->existingProfiles, MAX_NAME_LENGTH, MIN_NAME_LENGTH, profiles, 0);
             if (appData->existingProfiles->length > 1)
             {
                 shift(appData->existingProfiles);
@@ -98,7 +99,7 @@ void initTypesFile(char *path, AppData *appData)
         fp = openFile(path, file, "r");
         if (fp != NULL)
         {
-            getFileContent(temp, MAX_TYPE_LENGTH, MIN_TYPE_LENGTH, fp);
+            getFileContent(temp, MAX_TYPE_LENGTH, MIN_TYPE_LENGTH, fp, 0);
             forEach(temp, getTypes, appData->rules.types);
             forEach(temp, getNumReqTypes, appData->rules.numReqTypes);
             if (appData->rules.types->length > SQL_DEFAULT_TYPES_NUM)
@@ -115,6 +116,29 @@ void initTypesFile(char *path, AppData *appData)
         }
     }
     destroyList(temp);
+}
+
+void initDataFiles(char *path)
+{
+    FILE *fp = NULL;
+    if (!fileExists(path, CITY_FILE))
+    {
+        fp = openFile(path, CITY_FILE, "w");
+        fprintf(fp, "Paris\nMarseille\nLyon\nToulouse\nNice\nNantes\nStrasbourg\nMontpellier\nBordeaux\nLille\n");
+        fclose(fp);
+    }
+    if (!fileExists(path, NAME_FILE))
+    {
+        fp = openFile(path, NAME_FILE, "w");
+        fprintf(fp, "natane\nquentin\nbaptiste\njeremy\nruben\nsacha\ndan\nmarvin\ndavid\nsteven\n");
+        fclose(fp);
+    }
+    if (!fileExists(path, MAIL_FILE))
+    {
+        fp = openFile(path, MAIL_FILE, "w");
+        fprintf(fp, "@gmail.com\n@hotmail.com\n@myges.com\n@yahoo.com\n@sfr.com\n@orange.com\n@free.com\n@esgi.com\n@virgine.com\n@ovh.com\n");
+        fclose(fp);
+    }
 }
 
 void getTypes(char *content, void *data)
@@ -204,7 +228,7 @@ void setDefaultData(AppData *appData)
     setDefaultTypes(appData->rules.types);
 }
 
-void getFileContent(List *storage, int bufferSize, int minLength, FILE *fp)
+void getFileContent(List *storage, int bufferSize, int minLength, FILE *fp, int check)
 {
     char *buffer = malloc(bufferSize * sizeof(char));
     if (buffer == NULL)
@@ -214,6 +238,8 @@ void getFileContent(List *storage, int bufferSize, int minLength, FILE *fp)
         remCrlf(buffer);
         if (strlen(buffer) > minLength)
             push(storage, buffer);
+        if (check && !isStringSafe(buffer))
+            pop(storage);
     }
     fclose(fp);
     free(buffer);
