@@ -145,7 +145,9 @@ void generateMail(char *mail)
     }
     generateName(name);
     strcpy(mail, name);
+    strcat(mail, "@");
     strcat(mail, getElement(mails, generateDataInteger(0, mails->length))->content);
+    strcat(mail, ".io");
     destroyList(mails);
 }
 
@@ -171,7 +173,7 @@ void WriteInsDataToFile(FILE *fp, SqlInsertQuery *query)
         {
             processColumn(&query->cols[j]);
             addColumnName(columns, query->cols[j].colName, j, query->colNumber);
-            addColumnValue(columns, query->cols[j].colName, j, query->colNumber);
+            addColumnValue(values, query->cols[j].value, j, query->colNumber);
         }
         strcat(columns, ")");
         strcat(values, ")");
@@ -220,6 +222,8 @@ void processColumn(SqlData *column)
     else if (strcmp(column->typeName, SQL_DATA_TYPE_2) == 0)
     {
         char buffer[SQL_DATA_MAX_VALUE_LENGTH];
+        if (column->colLength == -1)
+            column->colLength = SQL_DEF_STRING_LENGTH;
         generateDataText(buffer, column->colLength);
         sprintf(column->value, "'%s'", buffer);
     }

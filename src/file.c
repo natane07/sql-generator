@@ -136,7 +136,7 @@ void initDataFiles(char *path)
     if (!fileExists(path, MAIL_FILE))
     {
         fp = openFile(path, MAIL_FILE, "w");
-        fprintf(fp, "@gmail.com\n@hotmail.com\n@myges.com\n@yahoo.com\n@sfr.com\n@orange.com\n@free.com\n@esgi.com\n@virgine.com\n@ovh.com\n");
+        fprintf(fp, "gmail\nhotmail\nmyges\nyahoo\nsfr\norange\nfree\nesgi\nvirgine\novh\n");
         fclose(fp);
     }
 }

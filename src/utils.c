@@ -159,7 +159,7 @@ void getStringFromWin(HWND hwnd, int controlId, char *destination, int maxLength
 
 void getStringFromWinDir(HWND win, char *destination, int maxLength)
 {
-    SendMessage(win, WM_GETTEXT, (WPARAM)maxLength - 1, (LPARAM)destination);
+    SendMessage(win, WM_GETTEXT, (WPARAM)maxLength, (LPARAM)destination);
 }
 
 void getCurrentStringFromComboDir(HWND combo, char *destination)

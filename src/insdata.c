@@ -3,6 +3,7 @@
 #include ".\..\include\sql.h"
 #include ".\..\include\sqldata.h"
 #include ".\..\include\styles.h"
+#include ".\..\include\file.h"
 #include <windows.h>
 
 void createInsDataMenu(HWND hwnd, InsDataControls *controls, SqlRules *rules, SqlInsertQuery *query)
@@ -30,7 +31,7 @@ void destroyInsDataMenu(InsDataControls *controls)
 
 void addInsertColumn(HWND hwnd, InsDataControls *controls, SqlRules *rules)
 {
-    if (rules->maxCol > controls->colNum)
+    if (SQL_DATA_MAX_COL_NUM > controls->colNum)
     {
         int index = INS_COL_CTRL_NUM * controls->colNum;
         int space = INS_COL_SPACE * controls->colNum;
@@ -80,16 +81,103 @@ void addSubTypes(List *list, HWND hwnd)
     setComboCursorDir(hwnd, 0);
 }
 
-void exportInsData(SqlInsertQuery *query, InsDataControls *controls)
+void exportInsData(HWND hwnd, SqlInsertQuery *query, InsDataControls *controls)
 {
-    SqlInsertQuery temp = saveInsData(controls);
+    OPENFILENAME ofn;
+    char file[MAX_PATH_LENGTH];
+    SqlInsertQuery temp = saveInsData(hwnd, controls);
+    if (checkInsData(&temp))
+    {
+        copyInsQuery(query, &temp);
+        setOfn(hwnd, &ofn, file);
+        if (GetSaveFileName(&ofn))
+        {
+            FILE *fp = fopen(file, "w");
+            if (fp != NULL)
+            {
+                WriteInsDataToFile(fp, query);
+            }
+            fclose(fp);
+        }
+    }
 }
 
-SqlInsertQuery saveInsData(InsDataControls *controls)
+SqlInsertQuery saveInsData(HWND hwnd, InsDataControls *controls)
 {
+    int i;
+    int ctrlPerCol = INS_COL_CTRL_NUM;
+    char digit[MAX_DIGIT_LENGTH];
+    SqlInsertQuery query;
+    getQueryTableName(hwnd, query.tabName);
+    query.colNumber = controls->colNum;
+    for (i = 0; i < query.colNumber; i++)
+    {
+        getStringFromWinDir(controls->colControls[i * ctrlPerCol + INS_COL_NAME_INDEX], query.cols[i].colName, SQL_COLUMN_NAME_MAX_LENGTH);
+        getStringFromWinDir(controls->colControls[i * ctrlPerCol + INS_LENGTH_INDEX], digit, MAX_DIGIT_LENGTH);
+        query.cols[i].colLength = strlen(digit) > 0 ? atoi(digit) : -1;
+        getCurrentStringFromComboDir(controls->colControls[i * ctrlPerCol + INS_TYPE_INDEX], query.cols[i].typeName);
+    }
+    return query;
 }
 
-void checkInsData(SqlInsertQuery *query)
+int checkInsData(SqlInsertQuery *query)
 {
+    int i;
+    List *cols = listInit();
+    for (i = 0; i < query->colNumber; i++)
+    {
+        push(cols, query->cols[i].colName);
+    }
+    if (!isStringSafe(query->tabName))
+    {
+        printError(INS_ERR_TAB_NAME_UNSAFE);
+        return 0;
+    }
+    if (strlen(query->tabName) > SQL_TABLE_NAME_MAX_LENGTH || strlen(query->tabName) < SQL_TABLE_NAME_MIN_LENGTH)
+    {
+        printError(INS_ERR_TAB_NAME_LENGTH);
+        return 0;
+    }
+    for (i = 0; i < query->colNumber; i++)
+    {
+        if (!isStringSafe(query->cols[i].colName))
+        {
+            printError(INS_ERR_COL_NAME_UNSAFE);
+            return 0;
+        }
+        if (strlen(query->cols[i].colName) > SQL_COLUMN_NAME_MAX_LENGTH || strlen(query->cols[i].colName) < SQL_COLUMN_NAME_MIN_LENGTH)
+        {
+            printError(INS_ERR_COL_NAME_LENGTH);
+            return 0;
+        }
+        if (hasClone(cols))
+        {
+            printError(INS_ERR_COL_NAME_EXISTS);
+            return 0;
+        }
+        if ((query->cols[i].colLength > MAX_VAR_LENGTH || query->cols[i].colLength < MIN_VAR_LENGTH) && query->cols[i].colLength != -1)
+        {
+            printError(INS_ERR_COL_LENGTH);
+            return 0;
+        }
+    }
+    destroyList(cols);
+    return 1;
+}
 
+void getQueryTableName(HWND hwnd, char *buffer)
+{
+    getStringFromWin(hwnd, INS_TAB_NAME_ID, buffer, SQL_TABLE_NAME_MAX_LENGTH);
+}
+
+void copyInsQuery(SqlInsertQuery *destination, SqlInsertQuery *source)
+{
+    strcpy(destination->tabName, source->tabName);
+    destination->colNumber = source->colNumber;
+    for (int i = 0; i < source->colNumber; i++)
+    {
+        strcpy(destination->cols[i].colName, source->cols[i].colName);
+        strcpy(destination->cols[i].typeName, source->cols[i].typeName);
+        destination->cols[i].colLength = source->cols[i].colLength;
+    }
 }

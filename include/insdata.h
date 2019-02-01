@@ -38,6 +38,17 @@
 #define INS_MAX_ADD_CTRL_NUM 99
 #define INS_COL_CTRL_NUM 3
 #define INS_COL_SPACE 30
+#define INS_COL_NAME_INDEX 0
+#define INS_TYPE_INDEX 1
+#define INS_LENGTH_INDEX 2
+
+//errors
+#define INS_ERR_TAB_NAME_UNSAFE "Table name should only use alphanumeric characters!"
+#define INS_ERR_TAB_NAME_LENGTH "Table name too short or too long!"
+#define INS_ERR_COL_NAME_UNSAFE "Column name should only use alphanumeric characters!"
+#define INS_ERR_COL_NAME_LENGTH "Column name too short or too long!"
+#define INS_ERR_COL_NAME_EXISTS "Column name already exists in table!"
+#define INS_ERR_COL_LENGTH "Length must have valid integer!"
 
 struct InsDataControls
 {
@@ -53,8 +64,11 @@ void addInsertColumn(HWND, InsDataControls *, SqlRules *);
 void removeInsertColumn(InsDataControls *);
 void getSubtypes(SqlRules *);
 void addSubTypes(List *, HWND);
-void exportInsData(SqlInsertQuery *, InsDataControls *);
-SqlInsertQuery saveInsData(InsDataControls *);
-void checkInsData(SqlInsertQuery *);
+void exportInsData(HWND, SqlInsertQuery *, InsDataControls *);
+SqlInsertQuery saveInsData(HWND, InsDataControls *);
+int checkInsData(SqlInsertQuery *);
+void getQueryTableName(HWND, char *);
+void copyInsQuery(SqlInsertQuery *, SqlInsertQuery *);
+
 
 #endif
