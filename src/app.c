@@ -207,7 +207,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             exportModel(hwnd, &appData.model);
             break;
         case INS_EXPORTMODEL_ID:
-            exportInsData(hwnd, &appData.query, &insDataControls);
+            exportInsData(hwnd, &appData.query, &insDataControls, &appData.rules);
             break;
         case INS_ADDCOLUMN_ID:
             addInsertColumn(hwnd, &insDataControls, &appData.rules);

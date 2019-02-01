@@ -156,13 +156,13 @@ void setQuery(SqlInsertQuery *query)
     query->colNumber = 0;
 }
 
-void WriteInsDataToFile(FILE *fp, SqlInsertQuery *query)
+void WriteInsDataToFile(FILE *fp, SqlInsertQuery *query, SqlRules *rules)
 {
     int i, j;
     char queryString[SQL_DATA_MAX_QUERY_LENGTH];
     char columns[SQL_DATA_MAX_COLS_NAME];
     char values[SQL_DATA_MAX_COLS_VALUE];
-    for (i = 0; i < 8; i++)
+    for (i = 0; i < rules->insNum; i++)
     {
         strcpy(queryString, SQL_DATA_INSERT);
         strcat(queryString, SQL_DATA_SPACE);

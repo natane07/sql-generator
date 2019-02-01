@@ -3,6 +3,7 @@
 #define SQLDATA_H
 
 #include "list.h"
+#include "sql.h"
 
 //default sql types
 #define SQL_DATA_TYPE_1 "INTEGER"
@@ -62,7 +63,7 @@ void generateName(char *);
 void generatePhoneNumber(char *);
 void generateMail(char *);
 void setQuery(SqlInsertQuery *);
-void WriteInsDataToFile(FILE *, SqlInsertQuery *);
+void WriteInsDataToFile(FILE *, SqlInsertQuery *, SqlRules *);
 void addColumnName(char *, char *, int, int);
 void addColumnValue(char *, char *, int, int);
 void processColumn(SqlData *);

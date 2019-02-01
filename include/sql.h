@@ -84,6 +84,7 @@ struct SqlRules
 {
     int maxCol;
     int maxFk;
+    int insNum;
     List *types;
     List *numReqTypes;
     List *subTypes;
