@@ -53,5 +53,8 @@ void addInsertColumn(HWND, InsDataControls *, SqlRules *);
 void removeInsertColumn(InsDataControls *);
 void getSubtypes(SqlRules *);
 void addSubTypes(List *, HWND);
+void exportInsData(SqlInsertQuery *, InsDataControls *);
+SqlInsertQuery saveInsData(InsDataControls *);
+void checkInsData(SqlInsertQuery *);
 
 #endif

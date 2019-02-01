@@ -79,3 +79,17 @@ void addSubTypes(List *list, HWND hwnd)
     }
     setComboCursorDir(hwnd, 0);
 }
+
+void exportInsData(SqlInsertQuery *query, InsDataControls *controls)
+{
+    SqlInsertQuery temp = saveInsData(controls);
+}
+
+SqlInsertQuery saveInsData(InsDataControls *controls)
+{
+}
+
+void checkInsData(SqlInsertQuery *query)
+{
+
+}
