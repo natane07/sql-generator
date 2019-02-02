@@ -14,8 +14,10 @@
 #define MAX_TYPE_LENGTH 30
 #define MIN_TYPE_LENGTH 3
 #define MAX_SENT_LENGTH 80
-#define MAX_PATH_LENGTH 260
+#define MAX_PATH_LENGTH MAX_PATH
 #define MAX_DIGIT_LENGTH 5
+#define MAX_FILE_LENGTH 80
+#define MIN_FILE_LENGTH 3
 
 //SETTINGS
 #define SETT_DEF_PRO "defaultProfile"

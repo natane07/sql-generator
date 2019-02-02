@@ -51,5 +51,6 @@ void updateHint(HWND, char *);
 int loadProfile(AppData *);
 void setDefaultProfile(List *, char *);
 int checkProfileName(List *, char *, int);
+void setLatestScriptsForProfile(HWND, int, char *);
 
 #endif

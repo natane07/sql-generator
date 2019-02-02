@@ -58,7 +58,6 @@ void setMessage(char *message, char *pName)
 char *updateField(char *destination, HWND hwnd, int controlId, int idString)
 {
     char buffer[MAX_NAME_LENGTH];
-    initMemory(buffer, MAX_NAME_LENGTH);
     getStringFromCombo(hwnd, controlId, idString, buffer);
     return resetString(destination, buffer);
 }
@@ -161,4 +160,16 @@ int checkProfileName(List *profiles, char *profile, int mode)
         return 0;
     }
     return 1;
+}
+
+void setLatestScriptsForProfile(HWND hwnd, int idControl, char *name)
+{
+    char fPath[MAX_PATH_LENGTH];
+    List *scripts = listInit();
+    sprintf(fPath, "%s\\%s\\%s\\%s", getenv(LOCALSTORAGE), DATA_DIR, name, name);
+    FILE *fp = fopen(fPath, "r");
+    if (fp != NULL)
+    {
+        getFileContent(scripts, MAX_FILE_LENGTH, MIN_FILE_LENGTH, fp, 0);
+    }
 }

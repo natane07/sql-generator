@@ -106,7 +106,8 @@ void generateCity(char *city)
     {
         getFileContent(cities, SQL_DATA_MAX_VALUE_LENGTH, SQL_DATA_MIN_VALUE_LENGTH, fp, 1);
     }
-    strcpy(city, getElement(cities, generateDataInteger(0, cities->length))->content);
+    if (cities->length > 0)
+        strcpy(city, getElement(cities, generateDataInteger(0, cities->length))->content);
     destroyList(cities);
 }
 
@@ -118,7 +119,8 @@ void generateName(char *name)
     {
         getFileContent(names, SQL_DATA_MAX_VALUE_LENGTH, SQL_DATA_MIN_VALUE_LENGTH, fp, 1);
     }
-    strcpy(name, getElement(names, generateDataInteger(0, names->length))->content);
+    if (names->length > 0)
+        strcpy(name, getElement(names, generateDataInteger(0, names->length))->content);
     destroyList(names);
 }
 
@@ -146,7 +148,8 @@ void generateMail(char *mail)
     generateName(name);
     strcpy(mail, name);
     strcat(mail, "@");
-    strcat(mail, getElement(mails, generateDataInteger(0, mails->length))->content);
+    if (mails->length > 0)
+        strcat(mail, getElement(mails, generateDataInteger(0, mails->length))->content);
     strcat(mail, ".io");
     destroyList(mails);
 }
