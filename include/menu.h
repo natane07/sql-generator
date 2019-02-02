@@ -3,7 +3,7 @@
 #define MENU_H
 
 //controls
-#define MAIN_WIN_CTRL_NUM 9
+#define MAIN_WIN_CTRL_NUM 12
 #define EXIT_ID 1000
 #define EXIT_MSG "Exit"
 #define GTMENU_ID 1001
@@ -26,6 +26,13 @@
 #define MENUHINT_MSG "Not the owner of the currently selected profile? Select another or create a new one!"
 #define GTHINT_ID 9
 #define GTHINT_MSG "What do you want to do today?"
+#define LASTSCRMSG_ID 2000
+#define LASTSCRMSG_MSG "Latest Exported Scripts"
+#define LASTSCRLIST_ID 2001
+#define LASTSCRLIST_MSG ""
+#define LASTSCRSUB_ID 2002
+#define LASTSCRSUB_MSG "Export Script"
+
 
 #include <windows.h>
 #include "./app.h"

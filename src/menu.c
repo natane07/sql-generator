@@ -16,6 +16,9 @@ void createMainMenu(HWND hwnd, HWND *mainMenuControls)
     mainMenuControls[6] = CreateWindow("BUTTON", PROFILECRSUB_MSG, STL_BUTTON, 1110, 150, 150, 24, hwnd, (HMENU)PROFILECRSUB_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     mainMenuControls[7] = CreateWindow("STATIC", MENUHINT_MSG, STL_TEXT_CENTER, 425, 75, 600, 24, hwnd, (HMENU)MENUHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     mainMenuControls[8] = CreateWindow("STATIC", GTHINT_MSG, STL_TEXT_CENTER, 575, 300, 300, 24, hwnd, (HMENU)GTHINT_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+    mainMenuControls[9] = CreateWindow("STATIC", LASTSCRMSG_MSG, STL_TEXT_CENTER, 575, 500, 300, 24, hwnd, (HMENU)LASTSCRMSG_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+    mainMenuControls[10] = CreateWindow("COMBOBOX", LASTSCRLIST_MSG, STL_COMBO, 575, 550, 300, 100, hwnd, (HMENU)LASTSCRLIST_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+    mainMenuControls[11] = CreateWindow("BUTTON", LASTSCRSUB_MSG, STL_BUTTON, 650, 650, 150, 24, hwnd, (HMENU)LASTSCRSUB_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
 }
 
 void destroyMainMenu(HWND *mainMenuControls)
