@@ -81,15 +81,17 @@ void addSubTypes(List *list, HWND hwnd)
     setComboCursorDir(hwnd, 0);
 }
 
-void exportInsData(HWND hwnd, SqlInsertQuery *query, InsDataControls *controls, SqlRules *rules)
+void exportInsData(HWND hwnd, SqlInsertQuery *query, InsDataControls *controls, SqlRules *rules, char *name)
 {
     OPENFILENAME ofn;
     char file[MAX_PATH_LENGTH];
+    char fileTitle[MAX_PATH_LENGTH];
+    char copy[MAX_PATH_LENGTH];
     SqlInsertQuery temp = saveInsData(hwnd, controls);
     if (checkInsData(&temp))
     {
         copyInsQuery(query, &temp);
-        setOfn(hwnd, &ofn, file);
+        setOfn(hwnd, &ofn, file, fileTitle);
         if (GetSaveFileName(&ofn))
         {
             FILE *fp = fopen(file, "w");
@@ -98,6 +100,9 @@ void exportInsData(HWND hwnd, SqlInsertQuery *query, InsDataControls *controls, 
                 WriteInsDataToFile(fp, query, rules);
             }
             fclose(fp);
+            sprintf(copy, "%s\\%s\\%s\\%s", getenv(LOCALSTORAGE), DATA_DIR, name, fileTitle);
+            CopyFile(file, copy, FALSE);
+            addFileToList(name, fileTitle);
         }
     }
 }

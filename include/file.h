@@ -60,6 +60,6 @@ void getFileContent(List *, int, int, FILE *, int);
 void printTypesFile(FILE *);
 void setDefaultTypes(List *);
 void printConfigFile(FILE *);
-void initUserFile(char *);
+void initUserDir(char *);
 
 #endif

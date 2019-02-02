@@ -54,5 +54,7 @@ void createClass(WNDCLASSEX *, HINSTANCE, const char *, LRESULT(CALLBACK *)(HWND
 WinPosition getChildWindowPosition(HWND);
 void moveWindowBy(HWND, int, int);
 void destroyMenu(HWND *, int);
+void setOfn(HWND, OPENFILENAME *, char *, char *);
+void addFileToList(char *name, char *fileTitle);
 
 #endif

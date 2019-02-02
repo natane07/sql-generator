@@ -268,3 +268,39 @@ void destroyMenu(HWND *controls, int size)
     for (i = 0; i < size; i++)
         DestroyWindow(controls[i]);
 }
+
+void setOfn(HWND hwnd, OPENFILENAME *ofn, char *file, char *fileTitle)
+{
+    ofn->lStructSize = sizeof(OPENFILENAME);
+    ofn->hwndOwner = hwnd;
+    ofn->hInstance = NULL;
+    ofn->lpstrFilter = "SQL Scripts (*.sql)\0*.sql\0";
+    ofn->lpstrCustomFilter = NULL;
+    ofn->nMaxCustFilter = 0;
+    ofn->nFilterIndex = 1;
+    ofn->lpstrFile = file;
+    ofn->nMaxFile = MAX_PATH_LENGTH;
+    ofn->lpstrFileTitle = fileTitle;
+    ofn->nMaxFileTitle = MAX_PATH_LENGTH;
+    ofn->lpstrInitialDir = NULL;
+    ofn->lpstrTitle = NULL;
+    ofn->Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+    ofn->nFileOffset = 0;
+    ofn->nFileExtension = 0;
+    ofn->lpstrDefExt = "sql";
+    ofn->lCustData = 0;
+    ofn->lpfnHook = NULL;
+    ofn->lpTemplateName = NULL;
+}
+
+void addFileToList(char *name, char *fileTitle)
+{
+    char file[MAX_PATH_LENGTH];
+    sprintf(file, "%s\\%s\\%s\\%s", getenv(LOCALSTORAGE), DATA_DIR, name, name);
+    FILE *fp = fopen(file, "a");
+    if (fp != NULL)
+    {
+        fprintf(fp, "%s\n", fileTitle);
+        fclose(fp);
+    }
+}

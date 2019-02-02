@@ -64,11 +64,10 @@ void addInsertColumn(HWND, InsDataControls *, SqlRules *);
 void removeInsertColumn(InsDataControls *);
 void getSubtypes(SqlRules *);
 void addSubTypes(List *, HWND);
-void exportInsData(HWND, SqlInsertQuery *, InsDataControls *, SqlRules *);
+void exportInsData(HWND, SqlInsertQuery *, InsDataControls *, SqlRules *, char *);
 SqlInsertQuery saveInsData(HWND, InsDataControls *);
 int checkInsData(SqlInsertQuery *);
 void getQueryTableName(HWND, char *);
 void copyInsQuery(SqlInsertQuery *, SqlInsertQuery *);
-
 
 #endif

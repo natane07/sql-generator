@@ -464,42 +464,23 @@ void destroyCrTableMenu(CrTableControls *controls)
     destroyMenu(controls->fk, CRTABLE_WIN_FK_CTRL_NUM);
 }
 
-void exportModel(HWND hwnd, SqlModel *model)
+void exportModel(HWND hwnd, SqlModel *model, char *name)
 {
     OPENFILENAME ofn;
     char file[MAX_PATH_LENGTH];
-    setOfn(hwnd, &ofn, file);
+    char fileTitle[MAX_PATH_LENGTH];
+    char copy[MAX_PATH_LENGTH];
+    setOfn(hwnd, &ofn, file, fileTitle);
     if (GetSaveFileName(&ofn))
     {
         FILE *fp = fopen(file, "w");
         if (fp != NULL)
         {
-            generateScript(model , fp);
+            generateScript(model, fp);
         }
         fclose(fp);
+        sprintf(copy, "%s\\%s\\%s\\%s", getenv(LOCALSTORAGE), DATA_DIR, name, fileTitle);
+        CopyFile(file, copy, FALSE);
+        addFileToList(name, fileTitle);
     }
-}
-
-void setOfn(HWND hwnd, OPENFILENAME *ofn, char *file)
-{
-    ofn->lStructSize = sizeof(OPENFILENAME);
-    ofn->hwndOwner = hwnd;
-    ofn->hInstance = NULL;
-    ofn->lpstrFilter = "SQL Scripts (*.sql)\0*.sql\0";
-    ofn->lpstrCustomFilter = NULL;
-    ofn->nMaxCustFilter = 0;
-    ofn->nFilterIndex = 1;
-    ofn->lpstrFile = file;
-    ofn->nMaxFile = MAX_PATH_LENGTH;
-    ofn->lpstrFileTitle = NULL;
-    ofn->nMaxFileTitle = 0;
-    ofn->lpstrInitialDir = NULL;
-    ofn->lpstrTitle = NULL;
-    ofn->Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
-    ofn->nFileOffset = 0;
-    ofn->nFileExtension = 0;
-    ofn->lpstrDefExt = "sql";
-    ofn->lCustData = 0;
-    ofn->lpfnHook = NULL;
-    ofn->lpTemplateName = NULL;
 }

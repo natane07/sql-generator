@@ -204,10 +204,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             removeColumn(hwnd, &crTableMenuControls, COL_DEL, &appData.rules);
             break;
         case EXPORTMODEL_ID:
-            exportModel(hwnd, &appData.model);
+            exportModel(hwnd, &appData.model, appData.pName);
             break;
         case INS_EXPORTMODEL_ID:
-            exportInsData(hwnd, &appData.query, &insDataControls, &appData.rules);
+            exportInsData(hwnd, &appData.query, &insDataControls, &appData.rules, appData.pName);
             break;
         case INS_ADDCOLUMN_ID:
             addInsertColumn(hwnd, &insDataControls, &appData.rules);

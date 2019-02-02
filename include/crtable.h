@@ -100,7 +100,7 @@ void getTableName(HWND, char *);
 void updateTableList(HWND, SqlModel *);
 void fillColumnCombo(HWND, SqlModel *, int);
 void fillTableCombo(HWND, SqlModel *);
-void fillPColumnCombo(CrTableControls *controls, SqlModel * model);
+void fillPColumnCombo(CrTableControls *controls, SqlModel *model);
 void clearTableList(HWND);
 int checkTable(SqlModel *, SqlTable *, int, SqlRules *);
 SqlTable saveTable(HWND, CrTableControls *, SqlRules *, SqlModel *);
@@ -115,7 +115,6 @@ void setTableName(HWND, char *);
 int getTableListCursor(HWND);
 void addTableToList(HWND, char *);
 void destroyCrTableMenu(CrTableControls *);
-void exportModel(HWND, SqlModel *);
-void setOfn(HWND, OPENFILENAME *, char *);
+void exportModel(HWND, SqlModel *, char *);
 
 #endif

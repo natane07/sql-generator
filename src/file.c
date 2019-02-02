@@ -281,11 +281,16 @@ void printConfigFile(FILE *fp)
     fclose(fp);
 }
 
-void initUserFile(char *name)
+void initUserDir(char *name)
 {
     char location[MAX_PATH_LENGTH];
-    sprintf(location, "%s\\%s", DATA_DIR, name);
-    FILE *fp = openFile(getenv(LOCALSTORAGE), location, "w");
-    if (fp != NULL)
-        fclose(fp);
+    sprintf(location, "%s\\%s\\%s", getenv(LOCALSTORAGE), DATA_DIR, name);
+    CreateDirectory(location, NULL);
+    sprintf(location, "%s\\%s\\%s", DATA_DIR, name, name);
+    if (!fileExists(getenv(LOCALSTORAGE), location))
+    {
+        FILE *fp = openFile(getenv(LOCALSTORAGE), location, "w");
+        if (fp != NULL)
+            fclose(fp);
+    }
 }

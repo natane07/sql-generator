@@ -121,7 +121,7 @@ int loadProfile(AppData *appData)
     if (ok)
     {
         setDefaultProfile(appData->settings, appData->pName);
-        initUserFile(appData->pName);
+        initUserDir(appData->pName);
         printInfo(buffer);
         return 1;
     }
