@@ -85,8 +85,11 @@ void exportInsData(HWND hwnd, SqlInsertQuery *query, InsDataControls *controls, 
 {
     OPENFILENAME ofn;
     char file[MAX_PATH_LENGTH];
+    initMemory(file, MAX_PATH_LENGTH);
     char fileTitle[MAX_PATH_LENGTH];
+    initMemory(fileTitle, MAX_PATH_LENGTH);
     char copy[MAX_PATH_LENGTH];
+    initMemory(copy, MAX_PATH_LENGTH);
     SqlInsertQuery temp = saveInsData(hwnd, controls);
     if (checkInsData(&temp))
     {

@@ -192,6 +192,7 @@ void reExportScript(HWND hwnd, int controlId, char *pName)
     char fName[MAX_FILE_LENGTH];
     getCurrentStringFromCombo(hwnd, controlId, fName);
     char file[MAX_PATH_LENGTH];
+    initMemory(file, MAX_PATH_LENGTH);
     char fCopy[MAX_PATH_LENGTH];
     sprintf(fCopy, "%s\\%s\\%s\\%s", getenv(LOCALSTORAGE), DATA_DIR, pName, fName);
     setOfn(hwnd, &ofn, file, NULL);

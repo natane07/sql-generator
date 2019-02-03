@@ -217,6 +217,7 @@ void addPrimaryKey(char *buffer, SqlTable *tab)
     int i;
     int counter = 0;
     char pkList[SQL_COLUMN_MAX_LENGTH];
+    initMemory(pkList, SQL_COLUMN_MAX_LENGTH);
     for (i = 0; i < tab->columnCount; i++)
     {
         if (tab->columns[i].pk && !counter)

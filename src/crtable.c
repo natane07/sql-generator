@@ -480,11 +480,16 @@ void destroyCrTableMenu(CrTableControls *controls)
 
 void exportModel(HWND hwnd, SqlModel *model, char *name)
 {
+    printf("toto");
     OPENFILENAME ofn;
     char file[MAX_PATH_LENGTH];
+    initMemory(file, MAX_PATH_LENGTH);
     char fileTitle[MAX_PATH_LENGTH];
+    initMemory(fileTitle, MAX_PATH_LENGTH);
     char copy[MAX_PATH_LENGTH];
+    initMemory(copy, MAX_PATH_LENGTH);
     setOfn(hwnd, &ofn, file, fileTitle);
+    printf("titi");
     if (GetSaveFileName(&ofn))
     {
         FILE *fp = fopen(file, "w");

@@ -206,8 +206,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             removeColumn(hwnd, &crTableMenuControls, COL_DEL, &appData.rules);
             break;
         case EXPORTMODEL_ID:
-            exportModel(hwnd, &appData.model, appData.pName);
-            break;
+        {
+            SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules, &appData.model);
+            if (checkTable(&appData.model, &table, crTableMenuControls.currentTableNumber, &appData.rules))
+            {
+                updateModel(&appData.model, &table, crTableMenuControls.currentTableNumber);
+                updateTableList(hwnd, &appData.model);
+                loadTable(&table, hwnd, &crTableMenuControls, &appData.rules, &appData.model);
+                exportModel(hwnd, &appData.model, appData.pName);
+            }
+            destroyTable(&table);
+        }
+        break;
         case LASTSCRSUB_ID:
             reExportScript(hwnd, LASTSCRLIST_ID, appData.pName);
             break;
