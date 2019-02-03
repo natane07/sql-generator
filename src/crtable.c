@@ -207,7 +207,7 @@ void clearTableList(HWND hwnd)
 
 int checkTable(SqlModel *model, SqlTable *table, int currentTableIndex, SqlRules *rules)
 {
-    int i;
+    int i, counter = 0;
     List *tabNames = listInit();
     List *cols = listInit();
     for (i = 0; i < model->tableCount; i++)
@@ -235,6 +235,10 @@ int checkTable(SqlModel *model, SqlTable *table, int currentTableIndex, SqlRules
     }
     for (i = 0; i < table->columnCount; i++)
     {
+        if (table->columns[i].ai)
+        {
+            counter++;
+        }
         if (!isStringSafe(table->columns[i].name))
         {
             printError(CRTAB_ERR_COL_NAME_UNSAFE);
@@ -255,6 +259,11 @@ int checkTable(SqlModel *model, SqlTable *table, int currentTableIndex, SqlRules
             printError(CRTAB_ERR_COL_LENGTH);
             return 0;
         }
+    }
+    if (!counter)
+    {
+        printError(CRTAB_ERR_PK_NONE);
+        return 0;
     }
     for (i = 0; i < table->relationCount; i++)
     {
