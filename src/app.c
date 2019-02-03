@@ -26,6 +26,7 @@ void setAppData(AppData *appData)
     appData->settings = NULL;
     appData->rules.types = NULL;
     appData->rules.numReqTypes = NULL;
+    appData->rules.aiTypes = NULL;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -269,6 +270,7 @@ void destroy(AppData *appData)
     destroyList(appData->rules.types);
     destroyList(appData->rules.numReqTypes);
     destroyList(appData->rules.subTypes);
+    destroyList(appData->rules.aiTypes);
     free(appData->version);
     free(appData->pName);
 }

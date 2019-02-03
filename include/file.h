@@ -53,6 +53,7 @@ void initTypesFile(char *, AppData *);
 void initDataFiles(char *);
 void getTypes(char *, void *);
 void getNumReqTypes(char *, void *);
+void getAiTypes(char *, void *);
 int fileExists(char *, char *);
 FILE *openFile(char *, char *, char *);
 void applySettings(List *, AppData *);

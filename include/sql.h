@@ -12,12 +12,13 @@
 #define SQL_TYPE_4 "TEXT"
 #define SQL_TYPE_5 "DATE"
 #define SQL_TYPE_6 "DECIMAL"
-#define SQL_TYPE_1_REQ_NUM NOT_REQ_NUM
+#define SQL_TYPE_1_REQ_NUM AI_NUM
 #define SQL_TYPE_2_REQ_NUM REQ_NUM
 #define SQL_TYPE_3_REQ_NUM REQ_NUM
 #define SQL_TYPE_4_REQ_NUM NOT_REQ_NUM
 #define SQL_TYPE_5_REQ_NUM NOT_REQ_NUM
 #define SQL_TYPE_6_REQ_NUM NOT_REQ_NUM
+#define AI_NUM "2"
 #define REQ_NUM "1"
 #define NOT_REQ_NUM "0"
 
@@ -87,6 +88,7 @@ struct SqlRules
     int insNum;
     List *types;
     List *numReqTypes;
+    List *aiTypes;
     List *subTypes;
 };
 

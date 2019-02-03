@@ -82,6 +82,7 @@
 #define CRTAB_ERR_COL_LENGTH "Type requiring length must have valid integer!"
 #define CRTAB_ERR_FK_EMPTY_FIELD "Foreign Key must be composed of valid elements!"
 #define CRTAB_ERR_PK_NONE "Table must contain at least one Primary Key!"
+#define CRTAB_ERR_AI_TYPE_INVALID "Auto_Increment must be enabled on proper type!"
 
 typedef struct CrTableControls CrTableControls;
 struct CrTableControls

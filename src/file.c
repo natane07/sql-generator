@@ -19,6 +19,7 @@ void initFs(AppData *appData)
     appData->existingProfiles = listInit();
     appData->rules.types = listInit();
     appData->rules.numReqTypes = listInit();
+    appData->rules.aiTypes = listInit();
     sprintf(path, "%s", getenv(LOCALSTORAGE));
     setDefaultData(appData);
     initFolders(path);
@@ -102,6 +103,7 @@ void initTypesFile(char *path, AppData *appData)
             getFileContent(temp, MAX_TYPE_LENGTH, MIN_TYPE_LENGTH, fp, 0);
             forEach(temp, getTypes, appData->rules.types);
             forEach(temp, getNumReqTypes, appData->rules.numReqTypes);
+            forEach(temp, getAiTypes, appData->rules.aiTypes);
             if (appData->rules.types->length > SQL_DEFAULT_TYPES_NUM)
                 for (i = 0; i < SQL_DEFAULT_TYPES_NUM; i++)
                     shift(appData->rules.types);
@@ -160,6 +162,18 @@ void getNumReqTypes(char *content, void *data)
     char value[MAX_TYPE_LENGTH];
     int ok = parseIni(content, key, value);
     if (ok && strcmp(value, REQ_NUM) == 0)
+    {
+        push(types, key);
+    }
+}
+
+void getAiTypes(char *content, void *data)
+{
+    List *types = data;
+    char key[MAX_TYPE_LENGTH];
+    char value[MAX_TYPE_LENGTH];
+    int ok = parseIni(content, key, value);
+    if (ok && strcmp(value, AI_NUM) == 0)
     {
         push(types, key);
     }

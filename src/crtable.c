@@ -235,9 +235,14 @@ int checkTable(SqlModel *model, SqlTable *table, int currentTableIndex, SqlRules
     }
     for (i = 0; i < table->columnCount; i++)
     {
-        if (table->columns[i].ai)
+        if (table->columns[i].pk)
         {
             counter++;
+        }
+        if (table->columns[i].ai && !has(rules->aiTypes, table->columns[i].type))
+        {
+            printError(CRTAB_ERR_AI_TYPE_INVALID);
+            return 0;
         }
         if (!isStringSafe(table->columns[i].name))
         {
