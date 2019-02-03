@@ -47,6 +47,7 @@ void setExistingProfiles(HWND hwnd, AppData *appData)
         index = 0;
     setComboCursor(hwnd, PROFILESEL_ID, index);
     appData->pName = updateField(appData->pName, hwnd, PROFILESEL_ID, index);
+    setLatestScriptsForProfile(hwnd, LASTSCRLIST_ID, appData->pName);
     updateHint(hwnd, appData->pName);
 }
 
@@ -83,6 +84,7 @@ void saveProfile(HWND hwnd, AppData *appData, char *pName)
     index = addStringToCombo(hwnd, PROFILESEL_ID, pName);
     setComboCursor(hwnd, PROFILESEL_ID, index);
     updateHint(hwnd, pName);
+    setLatestScriptsForProfile(hwnd, LASTSCRLIST_ID, pName);
     appendNameToFile(pName);
     setDefaultProfile(appData->settings, appData->pName);
     sprintf(sent, "%s %s", pName, OK_PROFILE_CR);
@@ -167,9 +169,19 @@ void setLatestScriptsForProfile(HWND hwnd, int idControl, char *name)
     char fPath[MAX_PATH_LENGTH];
     List *scripts = listInit();
     sprintf(fPath, "%s\\%s\\%s\\%s", getenv(LOCALSTORAGE), DATA_DIR, name, name);
+    destroyComboContent(hwnd, idControl);
     FILE *fp = fopen(fPath, "r");
     if (fp != NULL)
     {
         getFileContent(scripts, MAX_FILE_LENGTH, MIN_FILE_LENGTH, fp, 0);
+        removeClones(scripts);
+        Element *current = scripts->first;
+        while (current != NULL)
+        {
+            addStringToCombo(hwnd, idControl, current->content);
+            current = current->next;
+        }
+        setComboCursor(hwnd, idControl, 0);
     }
+    destroyList(scripts);
 }

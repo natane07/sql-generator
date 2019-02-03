@@ -127,9 +127,14 @@ int getComboCursorDir(HWND combo)
     return SendMessage(combo, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
 }
 
-void destroyComboContent(HWND combo)
+void destroyComboContentDir(HWND combo)
 {
     SendMessage(combo, CB_RESETCONTENT, (WPARAM)0, (LPARAM)0);
+}
+
+void destroyComboContent(HWND hwnd, int controlId)
+{
+    SendDlgItemMessage(hwnd, controlId, CB_RESETCONTENT, (WPARAM)0, (LPARAM)0);
 }
 
 void sendWinText(HWND hwnd, int controlId, char *text)

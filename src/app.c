@@ -115,6 +115,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 int index;
                 index = getComboCursor(hwnd, PROFILESEL_ID);
                 appData.pName = updateField(appData.pName, hwnd, PROFILESEL_ID, index);
+                setLatestScriptsForProfile(hwnd, LASTSCRLIST_ID, appData.pName);
                 updateHint(hwnd, appData.pName);
             }
             break;

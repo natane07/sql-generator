@@ -160,7 +160,7 @@ void fillColumnCombo(HWND combo, SqlModel *model, int currentTable)
 {
     int i;
     SqlTable table = model->tables[currentTable];
-    destroyComboContent(combo);
+    destroyComboContentDir(combo);
     for (i = 0; i < table.columnCount; i++)
     {
         addStringToComboDir(combo, table.columns[i].name);
@@ -170,7 +170,7 @@ void fillColumnCombo(HWND combo, SqlModel *model, int currentTable)
 void fillTableCombo(HWND combo, SqlModel *model)
 {
     int i;
-    destroyComboContent(combo);
+    destroyComboContentDir(combo);
     for (i = 0; i < model->tableCount; i++)
     {
         addStringToComboDir(combo, model->tables[i].name);
@@ -189,7 +189,7 @@ void fillPColumnCombo(CrTableControls *controls, SqlModel *model)
         if (index != CB_ERR)
         {
             sindex = getComboCursorDir(colHwnd);
-            destroyComboContent(colHwnd);
+            destroyComboContentDir(colHwnd);
             for (j = 0; j < model->tables[index].columnCount; j++)
             {
                 addStringToComboDir(colHwnd, model->tables[index].columns[j].name);
