@@ -1,7 +1,7 @@
 # Sql-Generator
+## Description
 This app allows to generate SQL scripts to build a database and to generate data to fill it.
-
-# Installation
+## Installation
 - Install TDM-GCC [here](http://tdm-gcc.tdragon.net/).
 - Add GCC to your PATH.
 - Install a Git Client [here](https://git-scm.com/).
