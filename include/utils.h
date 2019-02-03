@@ -42,6 +42,7 @@ void getStringFromComboDir(HWND, int, char *);
 void getStringFromWin(HWND, int, char *, int);
 void getStringFromWinDir(HWND, char *, int);
 void getCurrentStringFromComboDir(HWND, char *);
+void getCurrentStringFromCombo(HWND, int, char *);
 void clearListBox(HWND, int);
 int getRadioState(HWND);
 void enableRadio(HWND);

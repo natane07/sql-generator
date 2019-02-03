@@ -207,6 +207,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case EXPORTMODEL_ID:
             exportModel(hwnd, &appData.model, appData.pName);
             break;
+        case LASTSCRSUB_ID:
+            reExportScript(hwnd, LASTSCRLIST_ID, appData.pName);
+            break;
         case INS_EXPORTMODEL_ID:
             exportInsData(hwnd, &appData.query, &insDataControls, &appData.rules, appData.pName);
             break;

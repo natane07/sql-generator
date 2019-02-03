@@ -185,3 +185,18 @@ void setLatestScriptsForProfile(HWND hwnd, int idControl, char *name)
     }
     destroyList(scripts);
 }
+
+void reExportScript(HWND hwnd, int controlId, char *pName)
+{
+    OPENFILENAME ofn;
+    char fName[MAX_FILE_LENGTH];
+    getCurrentStringFromCombo(hwnd, controlId, fName);
+    char file[MAX_PATH_LENGTH];
+    char fCopy[MAX_PATH_LENGTH];
+    sprintf(fCopy, "%s\\%s\\%s\\%s", getenv(LOCALSTORAGE), DATA_DIR, pName, fName);
+    setOfn(hwnd, &ofn, file, NULL);
+    if (GetSaveFileName(&ofn))
+    {
+        CopyFile(fCopy, file, FALSE);
+    }
+}

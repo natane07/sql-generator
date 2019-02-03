@@ -172,6 +172,11 @@ void getCurrentStringFromComboDir(HWND combo, char *destination)
     getStringFromComboDir(combo, getComboCursorDir(combo), destination);
 }
 
+void getCurrentStringFromCombo(HWND hwnd, int controlId, char *destination)
+{
+    getStringFromCombo(hwnd, controlId, getComboCursor(hwnd, controlId), destination);
+}
+
 void clearListBox(HWND hwnd, int controlId)
 {
     SendDlgItemMessage(hwnd, controlId, LB_RESETCONTENT, (WPARAM)0, (LPARAM)0);
