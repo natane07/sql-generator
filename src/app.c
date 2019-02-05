@@ -141,18 +141,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             break;
         case ADDTABLE_ID:
         {
-            SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules, &appData.model);
-            if (checkTable(&appData.model, &table, crTableMenuControls.currentTableNumber, &appData.rules))
+            if (appData.rules.maxTab > appData.model.tableCount)
             {
-                updateModel(&appData.model, &table, crTableMenuControls.currentTableNumber);
-                crTableMenuControls.currentTableNumber = appData.model.tableCount;
-                SqlTable defTab = getDefaultTable(appData.model.tableCount);
-                loadTable(&defTab, hwnd, &crTableMenuControls, &appData.rules, &appData.model);
-                updateModel(&appData.model, &defTab, crTableMenuControls.currentTableNumber);
-                updateTableList(hwnd, &appData.model);
-                destroyTable(&defTab);
+                SqlTable table = saveTable(hwnd, &crTableMenuControls, &appData.rules, &appData.model);
+                if (checkTable(&appData.model, &table, crTableMenuControls.currentTableNumber, &appData.rules))
+                {
+                    updateModel(&appData.model, &table, crTableMenuControls.currentTableNumber);
+                    crTableMenuControls.currentTableNumber = appData.model.tableCount;
+                    SqlTable defTab = getDefaultTable(appData.model.tableCount);
+                    loadTable(&defTab, hwnd, &crTableMenuControls, &appData.rules, &appData.model);
+                    updateModel(&appData.model, &defTab, crTableMenuControls.currentTableNumber);
+                    updateTableList(hwnd, &appData.model);
+                    destroyTable(&defTab);
+                }
+                destroyTable(&table);
             }
-            destroyTable(&table);
         }
         break;
         case SAVETABLE_ID:

@@ -227,6 +227,10 @@ void applySetting(char *content, void *data)
         {
             appData->rules.maxFk = atoi(value);
         }
+        else if (strcmp(key, SETT_MAX_TAB) == 0)
+        {
+            appData->rules.maxTab = atoi(value);
+        }
         else if (strcmp(key, SETT_INS_NUM) == 0)
         {
             appData->rules.insNum = atoi(value);
@@ -242,6 +246,7 @@ void setDefaultData(AppData *appData)
     appData->pName = setString(appData->pName, profile);
     appData->rules.maxCol = atoi(DEFAULT_MAXCOL);
     appData->rules.maxFk = atoi(DEFAULT_MAXFK);
+    appData->rules.maxTab = atoi(DEFAULT_MAXTAB);
     appData->rules.insNum = atoi(DEFAULT_INSNUM);
     push(appData->existingProfiles, DEFAULT_PROFILE);
     setDefaultTypes(appData->rules.types);
@@ -291,6 +296,7 @@ void printConfigFile(FILE *fp)
     printIniToFile(fp, SETT_DEF_PRO, DEFAULT_PROFILE);
     printIniToFile(fp, SETT_MAX_COL, DEFAULT_MAXCOL);
     printIniToFile(fp, SETT_MAX_FK, DEFAULT_MAXFK);
+    printIniToFile(fp, SETT_MAX_TAB, DEFAULT_MAXTAB);
     printIniToFile(fp, SETT_INS_NUM, DEFAULT_INSNUM);
     fclose(fp);
 }

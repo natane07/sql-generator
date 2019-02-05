@@ -24,14 +24,16 @@
 #define SETT_VER "version"
 #define SETT_MAX_COL "maxColumnNum"
 #define SETT_MAX_FK "maxFkNum"
+#define SETT_MAX_TAB "maxTabNum"
 #define SETT_INS_NUM "insertNumber"
 
 //DEFAULT VALUES
 #define DEFAULT_PROFILE "default"
-#define DEFAULT_VERSION "0.2"
+#define DEFAULT_VERSION "1.0"
 #define DEFAULT_MAXCOL "15"
 #define DEFAULT_MAXFK "4"
 #define DEFAULT_INSNUM "8"
+#define DEFAULT_MAXTAB "15"
 
 //PATHS
 #define LOCALSTORAGE "APPDATA"
