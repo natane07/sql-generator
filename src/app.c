@@ -129,6 +129,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 checkTypeReqNum(&crTableMenuControls, &appData.rules);
             }
             break;
+        case INS_COLUMNEDIT_ID:
+            if (HIWORD(wParam) == CBN_SELCHANGE)
+            {
+                checkReqLength(&insDataControls, &appData.rules);
+            }
+            break;
         case RADIO_BTN_ID:
             changeRadioState((HWND)lParam);
             checkPkNonVacuity(&crTableMenuControls);

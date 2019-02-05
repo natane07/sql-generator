@@ -61,6 +61,7 @@ typedef struct InsDataControls InsDataControls;
 void createInsDataMenu(HWND, InsDataControls *, SqlRules *, SqlInsertQuery *);
 void destroyInsDataMenu(InsDataControls *);
 void addInsertColumn(HWND, InsDataControls *, SqlRules *);
+void checkReqLength(InsDataControls *, SqlRules *);
 void removeInsertColumn(InsDataControls *);
 void getSubtypes(SqlRules *);
 void addSubTypes(List *, HWND);

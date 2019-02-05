@@ -40,6 +40,31 @@ void addInsertColumn(HWND hwnd, InsDataControls *controls, SqlRules *rules)
         controls->colControls[index + 2] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", INS_LENGTH_MSG, STL_EDIT, 1050, 98 + space, 100, 24, hwnd, (HMENU)INS_LENGTH_ID, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
         addSubTypes(rules->subTypes, controls->colControls[index + 1]);
         controls->colNum++;
+        checkReqLength(controls, rules);
+    }
+}
+
+void checkReqLength(InsDataControls *controls, SqlRules *rules)
+{
+    int i;
+    int ctrlPerCol = INS_COL_CTRL_NUM;
+    int indexOfCombo = INS_TYPE_INDEX;
+    int indexOfEdit = INS_LENGTH_INDEX;
+    char buffer[MAX_TYPE_LENGTH];
+    HWND combo, edit;
+    for (i = 0; i < controls->colNum; i++)
+    {
+        combo = controls->colControls[i * ctrlPerCol + indexOfCombo];
+        edit = controls->colControls[i * ctrlPerCol + indexOfEdit];
+        getCurrentStringFromComboDir(combo, buffer);
+        if (strcmp(buffer, SQL_DATA_TYPE_2) == 0)
+        {
+            enableEdit(edit);
+        }
+        else
+        {
+            disableEdit(edit);
+        }
     }
 }
 
